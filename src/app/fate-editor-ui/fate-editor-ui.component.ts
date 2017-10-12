@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { FateControllerService } from '../fate-controller.service';
 
@@ -7,18 +7,15 @@ import { FateControllerService } from '../fate-controller.service';
   templateUrl: './fate-editor-ui.component.html',
   styleUrls: ['./fate-editor-ui.component.scss']
 })
-export class FateEditorUiComponent implements OnInit {
+export class FateEditorUiComponent {
 
   @Input()
   public uiId: string = 'default';
 
   constructor(private controller: FateControllerService) { }
 
-  ngOnInit() {
-  }
-
   public do(event, command, value) {
     event.preventDefault();
-    this.controller[command](value);
+    this.controller[command](this.uiId, value);
   }
 }
