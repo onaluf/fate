@@ -1,0 +1,32 @@
+<div>
+  <button (mousedown)="do($event, 'bold')">Bold</button>
+  <button (click)="do($event, 'italic')">Italic</button>
+  <button (click)="do($event, 'underline')">Underline</button>
+  <button (click)="do($event, 'strikeThrough')">Strike Through</button>
+  <button (click)="do($event, 'subscript')">subscript</button>
+  <button (click)="do($event, 'superscript')">superscript</button>
+  <!-- TODO: size -->
+  <!-- TODO: color -->
+  <button (click)="do($event, 'heading', 1)">Header 1</button>
+  <button (click)="do($event, 'heading', 2)">Header 2</button>
+  <button (click)="do($event, 'heading', 3)">Header 3</button>
+  <button (click)="do($event, 'heading', 4)">Header 4</button>
+  <button (click)="do($event, 'heading', 5)">Header 5</button>
+  <button (click)="do($event, 'heading', 6)">Header 6</button>
+  <button (click)="do($event, 'insertParagraph')">Paragraph</button>
+  <!-- TODO: background-color -->
+  <button (click)="do($event, 'indent')">Indent</button>
+  <button (click)="do($event, 'outdent')">Outdent</button>
+  <!-- TODO: inset image -->
+  <button (click)="do($event, 'insertOrderedList')">ordered list</button>
+  <button (click)="do($event, 'insertUnorderedList')">unordered list</button>
+  <button (click)="do($event, 'justifyCenter')">Center</button>
+  <button (click)="do($event, 'justifyFull')">Justify</button>
+  <button (click)="do($event, 'justifyLeft')">Left</button>
+  <button (click)="do($event, 'justifyRight')">Right</button>
+  <button (click)="do($event, 'undo')">Undo</button>
+  <button (click)="do($event, 'redo')">Redo</button>
+  <button (click)="do($event, 'removeFormat')">Clean Style</button>
+  <!-- TODO: insert link -->
+  <!-- TODO: remove link -->
+</div>

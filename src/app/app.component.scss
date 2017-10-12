@@ -1,0 +1,10 @@
+.editor-input {
+  padding: 10px;
+  border: 1px solid #DDD;
+  outline: 0;
+
+  &:active,
+  &:focus {
+    border-color: #AAA;
+  }
+}
