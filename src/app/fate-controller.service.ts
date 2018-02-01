@@ -40,6 +40,9 @@ export class FateControllerService {
   public heading(channel, level) { // Not IE ?, should test and possibly add < >
     this.commands[channel].next({name: 'formatBlock', value: 'H' + level});
   }
+  public normal(channel, level) { // Not IE ?, should test and possibly add < >
+    this.commands[channel].next({name: 'formatBlock', value: 'DIV'});
+  }
   public hiliteColor(channel, color) {
     this.commands[channel].next({name: 'hiliteColor', value: color});
   }

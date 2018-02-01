@@ -3,4 +3,5 @@
 <div class="editor-input" fateEditor>Test 1</div>
 
 <fate-editor-ui uiId="foo"></fate-editor-ui>
-<div class="editor-input" fateEditor uiId="foo">Test 2</div>
+<fate-editor uiId="foo" [(ngModel)]="someHtml"></fate-editor>
+<input type="text" [(ngModel)]="someHtml"> 
