@@ -1,0 +1,38 @@
+:host {
+  margin-bottom: 10px;
+  display: block;
+  position: relative;
+
+  fate-ui {
+    display: block;
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 300ms;
+
+    max-width: 100%;
+
+    &.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /deep/ {
+      .fate-ui-button {
+        &:hover {
+          background-color: rgba(255,255,255,0.3);
+        }
+        &:active {
+          background-color: rgba(255,255,255,0.4);
+        }
+      }
+      .fate-ui-separator {
+        background-color: #666 !important;
+      }
+    }
+  }
+
+  fate-input {
+    resize: vertical;
+  }
+}

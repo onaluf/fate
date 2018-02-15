@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FateEditorUiComponent } from './fate-editor-ui.component';
+import { FateInputComponent } from './fate-input.component';
 
-describe('FateEditorUiComponent', () => {
-  let component: FateEditorUiComponent;
-  let fixture: ComponentFixture<FateEditorUiComponent>;
+describe('FateEditorComponent', () => {
+  let component: FateInputComponent;
+  let fixture: ComponentFixture<FateInputComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FateEditorUiComponent ]
+      declarations: [ FateInputComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FateEditorUiComponent);
+    fixture = TestBed.createComponent(FateInputComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

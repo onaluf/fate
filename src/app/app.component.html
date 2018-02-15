@@ -1,7 +1,19 @@
-<h1>test</h1>
-<fate-editor-ui></fate-editor-ui>
-<div class="editor-input" fateEditor>Test 1</div>
-
-<fate-editor-ui uiId="foo"></fate-editor-ui>
-<fate-editor uiId="foo" [(ngModel)]="someHtml"></fate-editor>
-<input type="text" [(ngModel)]="someHtml"> 
+<div class="container">
+<form>
+  <div class="form-group">
+    <label>Simple UI</label>
+    <fate-ui uiId="foo"></fate-ui>
+    <fate-input uiId="foo" [(ngModel)]="someHtml" name="simple"></fate-input>
+  </div>
+  <div class="form-group">
+    <textarea type="text" [(ngModel)]="someHtml" name="simpleSrc"></textarea>
+  </div>
+  <div class="form-group">
+    <label>Bootstrap 4 UI</label>
+    <fate-bootstrap [(ngModel)]="sometext" name="bootstrap"></fate-bootstrap>
+  </div>
+  <div class="form-group">
+    <textarea type="text" [(ngModel)]="sometext"  name="bootstrapSrc"></textarea>
+  </div>
+</form>
+</div>

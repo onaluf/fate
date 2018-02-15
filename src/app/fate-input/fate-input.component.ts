@@ -1,38 +1,54 @@
-import { Component, Input, ElementRef, HostListener, AfterContentInit, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, ElementRef, HostListener, OnInit, OnChanges } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 import { Subscription } from 'rxjs/Subscription';
 
-import { FateMarshalService } from '../fate-marshal.service';
 import { FateControllerService } from '../fate-controller.service';
 import { FateHtmlParserService } from '../fate-html-parser.service';
+import { FateParserService } from '../fate-parser.service';
 
 @Component({
-  selector: 'fate-editor',
-  templateUrl: './fate-editor.component.html',
-  styleUrls: ['./fate-editor.component.scss'],
+  selector: 'fate-input',
+  host: {
+    '[innerHtml]': 'content',
+    'contenteditable': 'true'
+  },
+  template: '',
+  styles: [`
+    :host {
+      display: block;
+      padding: 10px;
+      border: 1px solid #DDD;
+      outline: 0;
+      margin-bottom: 10px;
+      resize: vertical;
+      overflow: auto;
+    }
+  `],
   providers: [
-    {provide: NG_VALUE_ACCESSOR, useExisting: FateEditorComponent, multi: true}
+    {provide: NG_VALUE_ACCESSOR, useExisting: FateInputComponent, multi: true}
   ],
 })
-export class FateEditorComponent implements ControlValueAccessor, AfterContentInit, OnChanges, OnInit {
+export class FateInputComponent implements ControlValueAccessor, OnChanges, OnInit {
 
   @Input()
   public uiId: string = 'default';
 
   public content: string = 'Hello World!';
 
-  constructor(private el: ElementRef, private marshal: FateMarshalService, private controller: FateControllerService, private htmlParser: FateHtmlParserService) {}
+  constructor(private el: ElementRef, private controller: FateControllerService, private htmlParser: FateHtmlParserService, private parser: FateParserService) {}
 
   @HostListener('blur', ['$event'])
   public blur (event: any) {
     // On blur we save the text Selection
+    console.debug('saveSelection');
     this.saveSelection();
   }
 
   @HostListener('focus', ['$event'])
   public focus (event: any) {
     // On focus we restore it
+    console.debug('restoreSelection');
     this.restoreSelection();
   }
 
@@ -41,17 +57,11 @@ export class FateEditorComponent implements ControlValueAccessor, AfterContentIn
     console.debug('value changed:', event.target.innerHTML);
     let tree = this.htmlParser.parseElement(event.target);
     console.debug('tree', tree);
-    console.debug('marshalled:', this.marshal.save(tree));
-    this.changed.forEach(f => f(this.marshal.save(tree)));
+    this.changed.forEach(f => f(this.parser.serialize(tree)));
   };
 
   public ngOnInit() {
     this.subscribeToUi(this.uiId);
-  }
-
-  public ngAfterContentInit(){
-    // Configure the Native element
-    this.el.nativeElement.querySelector('.fate-editor').setAttribute('contenteditable', 'true');
   }
 
   public ngOnChanges(changes) {
@@ -67,7 +77,7 @@ export class FateEditorComponent implements ControlValueAccessor, AfterContentIn
       this.uiSubscription.unsubscribe();
     }
     this.uiSubscription = this.controller.channel(uiId).subscribe((command) => {
-      console.debug('got command ' + command + ' on channel ' + uiId);
+      console.debug('got command ' + command.name + '/' + command.value + ' on channel ' + uiId);
       this.el.nativeElement.focus();
       document.execCommand(command.name, false, command.value);
     });
@@ -97,7 +107,11 @@ export class FateEditorComponent implements ControlValueAccessor, AfterContentIn
 
   public writeValue(value: string) {
     this.innerValue = value;
-    this.content = this.marshal.save(this.htmlParser.parse(this.innerValue));
+    if (value) {
+      this.content = this.htmlParser.serialize(this.parser.parse(this.innerValue));
+    } else {
+      this.content = '';
+    }
   }
 
   public registerOnChange(fn: (value: string) => void) {
