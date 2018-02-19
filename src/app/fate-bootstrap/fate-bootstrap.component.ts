@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, Input, HostListener } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 import { FateUiComponent } from '../fate-ui/fate-ui.component';
@@ -17,6 +17,9 @@ let instanceCounter = 0;
   ],
 })
 export class FateBootstrapComponent extends FateUiComponent implements ControlValueAccessor {
+
+  @Input()
+  row: number = 1;
 
   // implentation of ControlValueAccessor:
   private changed = new Array<(value: string) => void>();

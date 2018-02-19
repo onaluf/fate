@@ -34,6 +34,10 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   @Input()
   public uiId: string = 'default';
 
+  @Input()
+  public row: number = 1;
+  public rowHeight: number = 44;
+
   public content: string = 'Hello World!';
 
   constructor(private el: ElementRef, private controller: FateControllerService, private htmlParser: FateHtmlParserService, private parser: FateParserService) {}
@@ -67,6 +71,10 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   public ngOnChanges(changes) {
     if (changes['uiId']) {
       this.subscribeToUi(this.uiId);
+    }
+    if (changes['row']) {
+      let style:any = window.getComputedStyle(this.el.nativeElement);
+      this.el.nativeElement.style.height = (parseInt(style.lineHeight, 10) * this.row + parseInt(style.paddingTop, 10) + parseInt(style.paddingBottom, 10)) + 'px';
     }
   }
 
