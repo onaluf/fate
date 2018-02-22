@@ -1,0 +1,26 @@
+language: node_js
+cache:
+  directories:
+    - ~/.npm
+notifications:
+  email: false
+node_js: '8'
+
+before_script:
+- npm install -g @angular/cli
+# - npm install
+script: npm run build
+
+before_deploy:
+  - npm run packagr
+  - cd dist
+deploy:
+  provider: script
+  skip_cleanup: true
+  script:
+    - npx semantic-release
+  on:
+    branch: master
+# or should it be
+# after_success:
+#  - npm run travis-deploy-once "npm run semantic-release"
