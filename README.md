@@ -2,9 +2,26 @@
 
 # Flexible Angular Text Editor
 
-Fate is a lightweight rich text editor written for angular 2/4/5 in typescript. It's goal is to be very easy to customise and be as small as it can thanks to tree shaking. A bootstrap styled version is included to fit in existing bootstrap forms and a material version will be added in the very near future.
+Fate is a rich text editor natively written for angular (>= v2) with footprint and flexibility in mind. It's goal is to be very easy to customise and be as small as it can thanks to tree shaking. A bootstrap styled version is included to fit in existing bootstrap forms and a material version will be added in the very near future.
 
 Be warned that it's very early in the development of this module so many thing will change.
+
+# Installation and useage
+
+Use npm to download the module: `npm install --save fate-editor`. Then import the `FateModule` in your app:
+```typescript
+import { FateModule } from 'fate-editor';
+// ...
+
+@NgModule({
+  // ...
+  imports: [
+    // ...
+    FateModule
+  ]
+  // ...
+}) // ...
+```
 
 # Available Component
 
