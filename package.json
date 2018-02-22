@@ -2,6 +2,7 @@
   "name": "fate-editor",
   "version": "0.0.0-development",
   "license": "MIT",
+  "description": "A rich text editor natively written for angular (>= v2) with footprint and flexibility in mind",
   "homepage": "https://onaluf.github.io/fate",
   "author": "Selim Arsever <selim@arsever.ch> (http://selim.arsever.ch/)",
   "scripts": {
