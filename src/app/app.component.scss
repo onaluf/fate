@@ -1,10 +1,26 @@
-.editor-input {
-  padding: 10px;
-  border: 1px solid #DDD;
-  outline: 0;
 
-  &:active,
-  &:focus {
-    border-color: #AAA;
+:host {  margin-top: -80px;
+  display: flex;
+  justify-content: space-evenly;
+  text-align: center;
+
+  .demo {
+    width: 40%;
+    flex-grow: 0;
+    flex-shrink: 100;
+
+    .demo-type {
+      display: inline-block;
+      margin: 0 auto;
+      color: #FFF;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 10px 0;
+      text-shadow: 0 3px 6px rgba(0, 0, 0, 0.5)
+    }
+    .demo-editor {
+      text-align: left;
+      box-shadow: 0 3px 20px 0 rgba(0, 0, 0, 0.1);
+    }
   }
 }

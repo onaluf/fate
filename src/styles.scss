@@ -1,1 +1,51 @@
 /* You can add global styles to this file, and also import other style files */
+
+.container-main {
+  max-width: 800px;
+}
+
+.header {
+  text-align: center;
+  background-image: linear-gradient(to right top, #762e9c, #ce267e, #f75854, #f89a31, #d9d942);
+  padding: 60px 0 80px;
+  color: #FFF;
+
+  h1 {
+    font-size: 100px;
+    font-family: 'Abril Fatface', cursive;
+    text-shadow: 0 6px 18px rgba(0,0,0,0.5);
+  }
+}
+
+a,
+a:hover {
+  color: #ce267e;
+}
+
+code {
+  color: #f89a31;
+}
+h2 {
+  font-family: 'Abril Fatface', cursive;
+  margin-top: 40px;
+  font-size: 24px;
+}
+.fate-font {
+  font-family: 'Abril Fatface', cursive;
+  font-size: 1.5em;
+}
+
+.footer {
+  margin-top: 40px;
+  text-align: center;
+  padding: 40px 0;
+  // background: #333;
+  background-image: linear-gradient(to right, #2b2233, #2c2734, #2e2b34, #313034, #343434);
+  color: #FFF;
+  font-size: 12px;
+
+  a {
+    color: #FFF;
+    text-decoration: underline;
+  }
+}
