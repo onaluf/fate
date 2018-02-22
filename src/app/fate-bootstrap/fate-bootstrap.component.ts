@@ -19,7 +19,7 @@ let instanceCounter = 0;
 export class FateBootstrapComponent extends FateUiComponent implements ControlValueAccessor {
 
   @Input()
-  row: number = 1;
+  row: number;
 
   // implentation of ControlValueAccessor:
   private changed = new Array<(value: string) => void>();

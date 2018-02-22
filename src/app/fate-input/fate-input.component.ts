@@ -23,6 +23,8 @@ import { FateParserService } from '../fate-parser.service';
       margin-bottom: 10px;
       resize: vertical;
       overflow: auto;
+      background: #FFF;
+      color: #000;
     }
   `],
   providers: [
@@ -35,8 +37,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   public uiId: string = 'default';
 
   @Input()
-  public row: number = 1;
-  public rowHeight: number = 44;
+  public row: number;
 
   public content: string = 'Hello World!';
 
