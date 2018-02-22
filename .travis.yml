@@ -8,8 +8,8 @@ node_js: '8'
 
 before_script:
 - npm install -g @angular/cli
-- npm install
-script: build
+# - npm install
+script: npm build
 
 before_deploy:
   - npm run packagr
