@@ -35,35 +35,42 @@ export class FateParserService extends FateHtmlParserService implements FatePars
       command: 'heading',
       option: 1,
       name: '1st Header',
+      label: 'h1'
     },
     'heading2' : {
       command: 'heading',
       option: 2,
       name: '2nd Header',
+      label: 'h2'
     },
     'heading3' : {
       command: 'heading',
       option: 3,
       name: '3rd Header',
+      label: 'h3'
     },
     'heading4' : {
       command: 'heading',
       option: 4,
       name: '4th Header',
+      label: 'h4'
     },
     'heading5' : {
       command: 'heading',
       option: 5,
       name: '5th Header',
+      label: 'h5'
     },
     'heading6' : {
       command: 'heading',
       option: 6,
       name: '6th Header',
+      label: 'h6'
     },
     'normal' : {
       command: 'normal',
       name: 'Body',
+      label: 'p'
     },
     'indent' : {
       command: 'indent',
