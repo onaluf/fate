@@ -25,7 +25,7 @@ deploy:
   - provider: pages
     skip-cleanup: true
     github-token: $GH_TOKEN
-    local-dir: ../docs
+    local-dir: docs
     on:
       branch: master
 after_deploy:
