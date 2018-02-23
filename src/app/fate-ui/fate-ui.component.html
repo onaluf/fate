@@ -1,6 +1,10 @@
 <div>
   <ng-container *ngFor="let button of buttons">
-    <a *ngIf="button !== 'separator'" class="fate-ui-button" (click)="do($event, parser.getAction(button).command, parser.getAction(button).option)"><i [class]="icon.getIcon(button)"></i> <span>{{parser.getAction(button).name}}</span></a>
+    <a *ngIf="button !== 'separator'" class="fate-ui-button" (click)="do($event, parser.getAction(button).command, parser.getAction(button).option)">
+      <i *ngIf="!parser.getAction(button).label" [class]="icon.getIcon(button)"></i>
+      <span *ngIf="parser.getAction(button).label">{{parser.getAction(button).label}}</span>
+      <span class="reader">{{parser.getAction(button).name}}</span>
+    </a>
     <div *ngIf="button === 'separator'" class="fate-ui-separator"></div>
   </ng-container>
 </div>
