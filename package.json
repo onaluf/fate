@@ -7,7 +7,7 @@
   "author": "Selim Arsever <selim@arsever.ch> (http://selim.arsever.ch/)",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": " ng serve --base-href '/fate/'",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
