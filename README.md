@@ -6,6 +6,8 @@ Fate is a rich text editor natively written for angular (>= v2) in typescript wi
 
 Be warned that it's very early in the development of this module so many thing will change.
 
+For a live demo of the editor you can go to [the project's site](https://onaluf.github.io/fate).
+
 # Installation and usage
 
 Use npm to download the module: `npm install --save fate-editor`. Then import the `FateModule` in your app:
