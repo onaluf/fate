@@ -21,6 +21,13 @@ deploy:
     - npx semantic-release
   on:
     branch: master
-# or should it be
-# after_success:
-#  - npm run travis-deploy-once "npm run semantic-release"
+
+before_deploy_pages:
+  - npm run build
+deploy_pages:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard, marked secure
+  local-dir: dist
+  on:
+    branch: master

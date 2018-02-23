@@ -49,8 +49,10 @@ export class FateHtmlParserService {
       case 'H6':
         return FateType.HEADER6;
       case 'B':
+      case 'STRONG':
         return FateType.BOLD;
       case 'I':
+      case 'EM':
         return FateType.ITALIC;
       case 'U':
         return FateType.UNDERLINE;
