@@ -1,7 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
 
-.container-main {
+html,
+body {
+    height: 100%;
+    overflow: auto;
+}
+
+.container {
   max-width: 800px;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
 }
 
 .header {
@@ -40,9 +52,12 @@ h2 {
   text-align: center;
   padding: 40px 0;
   // background: #333;
-  background-image: linear-gradient(to right, #2b2233, #2c2734, #2e2b34, #313034, #343434);
+  background: linear-gradient(to right, #2b2233, #2c2734, #2e2b34, #313034, #343434);
+
   color: #FFF;
   font-size: 12px;
+
+  flex-grow: 100;
 
   a {
     color: #FFF;
