@@ -9,6 +9,7 @@ import { FateBootstrapComponent } from './fate-bootstrap/fate-bootstrap.componen
 import { FateControllerService } from './fate-controller.service';
 import { FateHtmlParserService } from './fate-html-parser.service';
 import { FateIconService } from './fate-icon.service';
+import { FateMaterialIconService } from './fate-material-icon.service';
 import { FateParserService } from './fate-parser.service';
 
 export { FateParser } from './fate-parser.interface';
@@ -16,6 +17,7 @@ export { FateIcon } from './fate-icon.interface';
 export { FateUiComponent } from './fate-ui/fate-ui.component';
 export { FateInputComponent } from './fate-input/fate-input.component';
 export { FateIconService } from './fate-icon.service';
+export { FateMaterialIconService } from './fate-material-icon.service';
 export { FateParserService } from './fate-parser.service';
 export { FateTree } from './fate-tree';
 export { FateType } from './fate-type.enum';
@@ -40,6 +42,7 @@ export { FateStyle } from './fate-style.enum';
     FateControllerService,
     FateHtmlParserService,
     FateIconService,
+    FateMaterialIconService,
     FateParserService
   ]
 })
