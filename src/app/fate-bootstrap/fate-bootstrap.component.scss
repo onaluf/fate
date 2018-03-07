@@ -36,6 +36,8 @@
   }
 
   fate-input {
-    resize: vertical;
+    /deep/ .fate-edit-target {
+      resize: vertical;
+    }
   }
 }
