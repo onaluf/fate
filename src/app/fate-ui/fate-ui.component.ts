@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, HostListener } from '@angular/core';
 
 import { FateControllerService } from '../fate-controller.service';
 import { FateParserService } from '../fate-parser.service';
@@ -48,6 +48,11 @@ export class FateUiComponent {
   ];
 
   constructor(private controller: FateControllerService, public icon: FateIconService, public parser: FateParserService) { }
+
+  @HostListener('mousedown', ['$event'])
+  public mouseDown(event) {
+    event.preventDefault();
+  }
 
   public do(event, command, value) {
     event.preventDefault();

@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, HostListener, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, ElementRef, OnInit, OnChanges, AfterViewInit } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 import { Subscription } from 'rxjs/Subscription';
@@ -9,13 +9,11 @@ import { FateParserService } from '../fate-parser.service';
 
 @Component({
   selector: 'fate-input',
-  host: {
-    '[innerHtml]': 'content',
-    'contenteditable': 'true'
-  },
-  template: '',
+  template: `
+    <div [class]="'fate-edit-target ' + customClass" contenteditable="true" [innerHtml]="content"></div>
+  `,
   styles: [`
-    :host {
+    :host div.fate-edit-target {
       display: block;
       padding: 10px;
       border: 1px solid #DDD;
@@ -31,7 +29,7 @@ import { FateParserService } from '../fate-parser.service';
     {provide: NG_VALUE_ACCESSOR, useExisting: FateInputComponent, multi: true}
   ],
 })
-export class FateInputComponent implements ControlValueAccessor, OnChanges, OnInit {
+export class FateInputComponent implements ControlValueAccessor, OnChanges, OnInit, AfterViewInit {
 
   @Input()
   public uiId: string = 'default';
@@ -39,34 +37,39 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   @Input()
   public row: number;
 
-  public content: string = 'Hello World!';
+  @Input()
+  public customClass: string;
+
+  public content: string = '';
+  private editTarget: any;
 
   constructor(private el: ElementRef, private controller: FateControllerService, private htmlParser: FateHtmlParserService, private parser: FateParserService) {}
 
-  @HostListener('blur', ['$event'])
-  public blur (event: any) {
-    // On blur we save the text Selection
-    console.debug('saveSelection');
-    this.saveSelection();
-  }
-
-  @HostListener('focus', ['$event'])
-  public focus (event: any) {
-    // On focus we restore it
-    console.debug('restoreSelection');
-    this.restoreSelection();
-  }
-
-  @HostListener('input', ['$event'])
-  public valueChanged(event) {
-    console.debug('value changed:', event.target.innerHTML);
-    let tree = this.htmlParser.parseElement(event.target);
-    console.debug('tree', tree);
-    this.changed.forEach(f => f(this.parser.serialize(tree)));
-  };
-
   public ngOnInit() {
     this.subscribeToUi(this.uiId);
+  }
+
+  public ngAfterViewInit() {
+    this.editTarget = this.el.nativeElement.querySelector('.fate-edit-target');
+    if (this.row) {
+      this.computeHeight();
+    }
+
+    this.editTarget.addEventListener('blur', (event: any) => {
+      // On blur we save the text Selection
+      this.saveSelection();
+    });
+
+    this.editTarget.addEventListener('focus', (event: any) => {
+      // On focus we restore it
+      this.restoreSelection();
+    });
+
+    this.editTarget.addEventListener('input', (event: any) => {
+      console.debug('value changed:', this.editTarget.innerHTML);
+      let tree = this.htmlParser.parseElement(this.editTarget);
+      this.changed.forEach(f => f(this.parser.serialize(tree)));
+    });
   }
 
   public ngOnChanges(changes) {
@@ -74,9 +77,15 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       this.subscribeToUi(this.uiId);
     }
     if (changes['row']) {
-      let style:any = window.getComputedStyle(this.el.nativeElement);
-      this.el.nativeElement.style.height = (parseInt(style.lineHeight, 10) * this.row + parseInt(style.paddingTop, 10) + parseInt(style.paddingBottom, 10)) + 'px';
+      if (this.editTarget) {
+        this.computeHeight();
+      }
     }
+  }
+
+  private computeHeight() {
+    let style:any = window.getComputedStyle(this.editTarget);
+    this.editTarget.style.height = (parseInt(style.lineHeight, 10) * this.row + parseInt(style.paddingTop, 10) + parseInt(style.paddingBottom, 10)) + 'px';
   }
 
   private uiSubscription: Subscription;
@@ -87,7 +96,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     }
     this.uiSubscription = this.controller.channel(uiId).subscribe((command) => {
       console.debug('got command ' + command.name + '/' + command.value + ' on channel ' + uiId);
-      this.el.nativeElement.focus();
+      this.editTarget.focus();
       document.execCommand(command.name, false, command.value);
     });
   }
@@ -95,6 +104,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   // Saves the current text selection
   private selectionRange: Range;
   private saveSelection() {
+    console.debug('saveSelection');
     let sel = window.getSelection();
     if (sel.getRangeAt && sel.rangeCount) {
       console.debug('Saving range: ', sel.getRangeAt(0));
@@ -103,6 +113,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   }
   // Restors the current text selection
   private restoreSelection() {
+    console.debug('restoreSelection');
     if(this.selectionRange) {
       let sel = window.getSelection();
       sel.removeAllRanges();
@@ -117,7 +128,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   public writeValue(value: string) {
     this.innerValue = value;
     if (value) {
-      this.content = this.htmlParser.serialize(this.parser.parse(this.innerValue));
+      this.content = this.htmlParser.serialize(this.parser.parse(value));
     } else {
       this.content = '';
     }
