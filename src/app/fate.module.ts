@@ -1,10 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { FateUiComponent } from './fate-ui/fate-ui.component';
 import { FateInputComponent } from './fate-input/fate-input.component';
 import { FateBootstrapComponent } from './fate-bootstrap/fate-bootstrap.component';
+import { FateMaterialComponent } from './fate-material/fate-material.component';
 
 import { FateControllerService } from './fate-controller.service';
 import { FateHtmlParserService } from './fate-html-parser.service';
@@ -28,15 +31,19 @@ export { FateStyle } from './fate-style.enum';
     FateInputComponent,
     FateUiComponent,
     FateBootstrapComponent,
+    FateMaterialComponent,
   ],
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    MatFormFieldModule,
+    // BrowserAnimationsModule
   ],
   exports: [
     FateUiComponent,
     FateInputComponent,
     FateBootstrapComponent,
+    FateMaterialComponent,
   ],
   providers: [
     FateControllerService,

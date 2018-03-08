@@ -122,11 +122,9 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   }
 
   // implentation of ControlValueAccessor:
-  private innerValue: string;
   private changed = new Array<(value: string) => void>();
 
   public writeValue(value: string) {
-    this.innerValue = value;
     if (value) {
       this.content = this.htmlParser.serialize(this.parser.parse(value));
     } else {

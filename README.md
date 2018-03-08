@@ -2,7 +2,7 @@
 
 # Flexible Angular Text Editor
 
-Fate is a rich text editor natively written for angular (>= v2) in typescript with footprint and flexibility in mind. Its goal is to be very easy to customize and be as small as it can thanks to tree shaking. A bootstrap styled version is included to fit in existing bootstrap forms and a material version will be added in the very near future.
+Fate is a rich text editor natively written for angular (>= v2) in typescript with footprint and flexibility in mind. Its goal is to be very easy to customize and be as small as it can thanks to tree shaking. Bootstrap and Google Material styled version are included to fit in forms using those styles. To use the material one you will need to include [Angular Material]("https://material.angular.io) in your project.
 
 Be warned that it's very early in the development of this module so many thing will change.
 
@@ -50,9 +50,15 @@ This allow you to choose which `fate-input` is targeted by this UI. For example 
 This is an array of strings that define which buttons should be shown in which order, you can add `"separator"` at any position to add a separator between two buttons. Under the hood it's just using the two previously described components and styling them. You don't need to specify any `uiId` because they are generated automatically.
 
 ## fate-bootstrap
-This is a all-in-one component that includes a UI and an input. It's mean to be a drop-in replacement to textarea in bootstrap forms
+This is a all-in-one component that includes a UI and an input. It's mean to be a drop-in replacement to textarea in Bootstrap forms
 ### Properties
 #### row
 This the number of row of text the input should show by default. This mimics the behaviour of the same property on textarea. Note that by default `fate-input` is resizable vertically so this only specifies the default height.
+#### ngModel
+You can use `ngModel` like you would on any other input element and it will behave the same. The value that will be read and exported is dependent of the parser you've decided to inject, by default it's HTML.
+
+## fate-material
+This is a all-in-one component that includes a UI and an input. It's mean to be a drop-in replacement to textarea in Material forms
+### Properties
 #### ngModel
 You can use `ngModel` like you would on any other input element and it will behave the same. The value that will be read and exported is dependent of the parser you've decided to inject, by default it's HTML.
