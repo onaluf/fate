@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { FateUiComponent } from './fate-ui/fate-ui.component';
@@ -37,7 +36,6 @@ export { FateStyle } from './fate-style.enum';
     CommonModule,
     FormsModule,
     MatFormFieldModule,
-    // BrowserAnimationsModule
   ],
   exports: [
     FateUiComponent,
