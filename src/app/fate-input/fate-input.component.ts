@@ -1,5 +1,6 @@
 import { Component, Input, ElementRef, OnInit, OnChanges, AfterViewInit } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { Subscription } from 'rxjs/Subscription';
 
@@ -40,10 +41,10 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   @Input()
   public customClass: string;
 
-  public content: string = '';
+  public content: SafeHtml;
   private editTarget: any;
 
-  constructor(private el: ElementRef, private controller: FateControllerService, private htmlParser: FateHtmlParserService, private parser: FateParserService) {}
+  constructor(private el: ElementRef, private controller: FateControllerService, private htmlParser: FateHtmlParserService, private parser: FateParserService, private sanitizer: DomSanitizer) {}
 
   public ngOnInit() {
     this.subscribeToUi(this.uiId);
@@ -125,7 +126,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
 
   public writeValue(value: string) {
     if (value) {
-      this.content = this.htmlParser.serialize(this.parser.parse(value));
+      this.content = this.sanitizer.bypassSecurityTrustHtml(this.htmlParser.serialize(this.parser.parse(value)));
     } else {
       this.content = '';
     }
