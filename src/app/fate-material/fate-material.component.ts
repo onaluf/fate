@@ -24,6 +24,9 @@ let instanceCounter = 0;
 export class FateMaterialComponent extends FateUiComponent implements  ControlValueAccessor, OnDestroy, MatFormFieldControl<string>  {
 
   @Input()
+  row: number;
+
+  @Input()
   public get value(): string {
     return this.passthrough;
   }
