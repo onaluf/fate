@@ -10,7 +10,7 @@ import { FateParserService } from '../fate-parser.service';
 @Component({
   selector: 'fate-input',
   template: `
-    <div [class]="'fate-edit-target ' + customClass" contenteditable="true" [innerHtml]="content"></div>
+    <div [class]="'fate-edit-target ' + customClass" contenteditable="true" [innerHtml]="content || '&nbsp;'"></div>
   `,
   styles: [`
     :host div.fate-edit-target {
@@ -55,7 +55,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       this.computeHeight();
     }
 
-    this.editTarget.addEventListener('blur', (event: any) => {
+    this.editTarget.addEventListener('click', (event: any) => {
       // On blur we save the text Selection
       this.saveSelection();
     });
@@ -107,13 +107,12 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     console.debug('saveSelection');
     let sel = window.getSelection();
     if (sel.getRangeAt && sel.rangeCount) {
-      console.debug('Saving range: ', sel.getRangeAt(0));
-      this.selectionRange = sel.getRangeAt(0);
+      this.selectionRange =  sel.getRangeAt(0);
     }
   }
   // Restors the current text selection
   private restoreSelection() {
-    console.debug('restoreSelection');
+    console.debug('restoreSelection', this.selectionRange);
     if(this.selectionRange) {
       let sel = window.getSelection();
       sel.removeAllRanges();
