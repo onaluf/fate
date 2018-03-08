@@ -5,9 +5,19 @@
   text-align: center;
 
   .demo {
-    width: 40%;
+    width: 30%;
     flex-grow: 0;
     flex-shrink: 100;
+
+    &.material .form-group {
+      position: relative;
+      background: #FFF;
+      padding: 10px;
+
+      mat-form-field {
+        width: 100%;
+      }
+    }
 
     .demo-type {
       display: inline-block;

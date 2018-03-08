@@ -26,10 +26,12 @@ export class FateParserService extends FateHtmlParserService implements FatePars
     'subscript' : {
       command: 'subscript',
       name: 'Subscript',
+      label: 'sub'
     },
     'superscript' : {
       command: 'superscript',
       name: 'Superscript',
+      label: 'sup'
     },
     'heading1' : {
       command: 'heading',
