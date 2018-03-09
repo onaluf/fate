@@ -29,6 +29,7 @@ export class FateBootstrapComponent extends FateUiComponent implements ControlVa
   public uiId;
   public uiVisible;
 
+
   @HostListener('focusout', ['$event'])
   public blur (event: any) {
     if (!this.clickOngoing) {

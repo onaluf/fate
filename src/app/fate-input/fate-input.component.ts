@@ -74,6 +74,8 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       let tree = this.htmlParser.parseElement(this.editTarget);
       this.changed.forEach(f => f(this.parser.serialize(tree)));
     });
+    let style:any = window.getComputedStyle(this.editTarget);
+    this.editTarget.style.minHeight = this.getHeight(2);
   }
 
   public ngOnChanges(changes) {
@@ -88,8 +90,16 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   }
 
   private computeHeight() {
+    this.editTarget.style.height = this.getHeight(this.row);
+  }
+
+  private getHeight(rowCount) {
     let style:any = window.getComputedStyle(this.editTarget);
-    this.editTarget.style.height = (parseInt(style.lineHeight, 10) * this.row + parseInt(style.paddingTop, 10) + parseInt(style.paddingBottom, 10)) + 'px';
+    let height = this.editTarget.style.height = (parseInt(style.lineHeight, 10) * rowCount);
+    if (style.boxSizing === 'border-box') {
+      height += parseInt(style.paddingTop, 10) + parseInt(style.paddingBottom, 10) + parseInt(style.borderTopWidth, 10) + parseInt(style.borderBottomWidth, 10);
+    }
+    return height + 'px';
   }
 
   private uiSubscription: Subscription;
