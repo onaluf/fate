@@ -21,6 +21,9 @@ export class FateBootstrapComponent extends FateUiComponent implements ControlVa
   @Input()
   row: number;
 
+  @Input()
+  placeholder: string;
+
   // implentation of ControlValueAccessor:
   private changed = new Array<(value: string) => void>();
   private clickOngoing: boolean = false;
