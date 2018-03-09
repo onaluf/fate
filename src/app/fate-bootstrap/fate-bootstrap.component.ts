@@ -21,6 +21,9 @@ export class FateBootstrapComponent extends FateUiComponent implements ControlVa
   @Input()
   row: number;
 
+  @Input()
+  placeholder: string;
+
   // implentation of ControlValueAccessor:
   private changed = new Array<(value: string) => void>();
   private clickOngoing: boolean = false;
@@ -28,6 +31,7 @@ export class FateBootstrapComponent extends FateUiComponent implements ControlVa
   public passthrough: string;
   public uiId;
   public uiVisible;
+
 
   @HostListener('focusout', ['$event'])
   public blur (event: any) {

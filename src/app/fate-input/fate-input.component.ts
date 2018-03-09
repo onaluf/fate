@@ -11,7 +11,7 @@ import { FateParserService } from '../fate-parser.service';
 @Component({
   selector: 'fate-input',
   template: `
-    <div [class]="'fate-edit-target ' + customClass" contenteditable="true" [innerHtml]="content || '&nbsp;'"></div>
+    <div [class]="'fate-edit-target ' + customClass" [ngClass]="{empty: empty}" contenteditable="true" [title]="placeholder" [innerHtml]="content"></div>
   `,
   styles: [`
     :host div.fate-edit-target {
@@ -24,6 +24,10 @@ import { FateParserService } from '../fate-parser.service';
       overflow: auto;
       background: #FFF;
       color: #000;
+    }
+    :host div.fate-edit-target.empty:not(:focus):before {
+      content:attr(title);
+      color: #636c72;
     }
   `],
   providers: [
@@ -41,7 +45,11 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   @Input()
   public customClass: string;
 
+  @Input()
+  public placeholder: string = '';
+
   public content: SafeHtml;
+  public empty: boolean = true;
   private editTarget: any;
 
   constructor(private el: ElementRef, private controller: FateControllerService, private htmlParser: FateHtmlParserService, private parser: FateParserService, private sanitizer: DomSanitizer) {}
@@ -68,9 +76,17 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
 
     this.editTarget.addEventListener('input', (event: any) => {
       console.debug('value changed:', this.editTarget.innerHTML);
+      if (this.editTarget.innerHTML === '') {
+        this.editTarget.innerHTML = '<br>';
+        this.empty = true;
+      } else {
+        this.empty = false;
+      }
       let tree = this.htmlParser.parseElement(this.editTarget);
       this.changed.forEach(f => f(this.parser.serialize(tree)));
     });
+    let style:any = window.getComputedStyle(this.editTarget);
+    this.editTarget.style.minHeight = this.getHeight(2);
   }
 
   public ngOnChanges(changes) {
@@ -85,8 +101,16 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   }
 
   private computeHeight() {
+    this.editTarget.style.height = this.getHeight(this.row);
+  }
+
+  private getHeight(rowCount) {
     let style:any = window.getComputedStyle(this.editTarget);
-    this.editTarget.style.height = (parseInt(style.lineHeight, 10) * this.row + parseInt(style.paddingTop, 10) + parseInt(style.paddingBottom, 10)) + 'px';
+    let height = this.editTarget.style.height = (parseInt(style.lineHeight, 10) * rowCount);
+    if (style.boxSizing === 'border-box') {
+      height += parseInt(style.paddingTop, 10) + parseInt(style.paddingBottom, 10) + parseInt(style.borderTopWidth, 10) + parseInt(style.borderBottomWidth, 10);
+    }
+    return height + 'px';
   }
 
   private uiSubscription: Subscription;
@@ -127,8 +151,10 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   public writeValue(value: string) {
     if (value) {
       this.content = this.sanitizer.bypassSecurityTrustHtml(this.htmlParser.serialize(this.parser.parse(value)));
+      this.empty = false;
     } else {
-      this.content = '';
+      this.content = '<br>';
+      this.empty = true;
     }
   }
 

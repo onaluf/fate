@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/onaluf/fate.svg?branch=master)](https://travis-ci.org/onaluf/fate) [![Bower version](https://img.shields.io/npm/v/fate-editor.svg)](https://www.npmjs.com/package/fate-editor) [![MIT license](http://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Build Status](https://travis-ci.org/onaluf/fate.svg?branch=master)](https://travis-ci.org/onaluf/fate) [![NPM version](https://img.shields.io/npm/v/fate-editor.svg)](https://www.npmjs.com/package/fate-editor) [![MIT license](http://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 # Flexible Angular Text Editor
 
@@ -34,6 +34,8 @@ This is the rich text input, it's a low level component that basically looks lik
 This is the id of the UI component that should target this input box. By default all inputs respond to all UIs which is normally not what you want. By specifying the uiIds you can choose which one to pair together.
 #### row
 This the number of row of text the input should show by default. This mimics the behaviour of the same property on textarea. Note that by default `fate-input` is resizable vertically so this only specifies the default height.
+#### placeholder
+This is the placeholder text that will show when the input is empty and nothing is selected.
 #### ngModel
 You can use `ngModel` like you would on any other input element and it will behave the same. The value that will be read and exported is dependent of the parser you've decided to inject, by default it's HTML.
 
@@ -54,11 +56,17 @@ This is a all-in-one component that includes a UI and an input. It's mean to be 
 ### Properties
 #### row
 This the number of row of text the input should show by default. This mimics the behaviour of the same property on textarea. Note that by default `fate-input` is resizable vertically so this only specifies the default height.
+#### placeholder
+This is the placeholder text that will show when the input is empty and nothing is selected.
 #### ngModel
 You can use `ngModel` like you would on any other input element and it will behave the same. The value that will be read and exported is dependent of the parser you've decided to inject, by default it's HTML.
 
 ## fate-material
 This is a all-in-one component that includes a UI and an input. It's mean to be a drop-in replacement to textarea in Material forms
 ### Properties
+#### row
+This the number of row of text the input should show by default. This mimics the behaviour of the same property on textarea. Note that by default `fate-input` is resizable vertically so this only specifies the default height.
+#### placeholder
+This is the placeholder text that will show when the input is empty and nothing is selected.
 #### ngModel
 You can use `ngModel` like you would on any other input element and it will behave the same. The value that will be read and exported is dependent of the parser you've decided to inject, by default it's HTML.

@@ -3,7 +3,7 @@
   <form class="demo-editor">
     <div class="form-group">
       <fate-ui uiId="foo"></fate-ui>
-      <fate-input uiId="foo" [(ngModel)]="aboutFate" name="simple"></fate-input>
+      <fate-input uiId="foo" [(ngModel)]="aboutFate" placeholder="Rich Textarea" name="simple"></fate-input>
     </div>
   </form>
 </div>
@@ -11,8 +11,11 @@
   <div class="demo-type">Bootstrap4 UI</div>
   <form class="demo-editor">
     <div class="form-group">
-      <fate-bootstrap [(ngModel)]="aboutFate" name="bootstrap"></fate-bootstrap>
+      <fate-bootstrap [(ngModel)]="aboutFate" name="bootstrap" placeholder="Rich Textarea"></fate-bootstrap>
     </div>
+    <!-- remove to compare with default textarea <div class="form-group">
+      <textarea class="form-control" name="bootstraptextarea" placeholder="Default textarea"></textarea>
+    </div>-->
   </form>
 </div>
 <div class="demo material">
@@ -20,13 +23,18 @@
   <form class="demo-editor">
     <div class="form-group">
       <mat-form-field>
-        <fate-material [(ngModel)]="aboutFate" placeholder="Rich Text Input" name="material"></fate-material>
+        <fate-material [(ngModel)]="aboutFate" placeholder="Rich Textarea" name="material"></fate-material>
       </mat-form-field>
     </div>
+    <!-- remove to compare with default textarea <div class="form-group">
+      <mat-form-field>
+        <textarea matInput placeholder="Default textarea" name="materialtextarea"></textarea>
+      </mat-form-field>
+    </div>-->
   </form>
 </div>
 
 <!--
   <strong>debug</strong>
-  <textarea type="text" [(ngModel)]="aboutFate"  name="bootstrapSrc"></textarea>
+  <textarea type="text" [(ngModel)]="aboutFate"  name="htmlSrc"></textarea>
 -->

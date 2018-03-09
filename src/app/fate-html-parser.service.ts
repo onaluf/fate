@@ -19,14 +19,24 @@ export class FateHtmlParserService {
 
   public parseElement(element: HTMLElement): FateTree {
     let node = new FateTree();
-    node.type = this.parseType(element);
+    let types = this.parseType(element);
+
+    let currentNode = node;
+    for (let i in types) {
+      currentNode.type = types[i];
+      if (parseInt(i, 10) + 1 < types.length) {
+        let newNode = new FateTree();
+        currentNode.children.push(newNode);
+        currentNode = newNode;
+      }
+    }
 
     for (let i = 0; i < element.childNodes.length; i ++) {
       let child = element.childNodes[i];
       if (child instanceof Text) {
-        node.children.push(child.data);
+        currentNode.children.push(child.data);
       } else if (child instanceof HTMLElement) {
-        node.children.push(this.parseElement(child));
+        currentNode.children.push(this.parseElement(child));
       } else {
         // ignore
       }
@@ -34,64 +44,79 @@ export class FateHtmlParserService {
     return node;
   }
 
-  private parseType(element: HTMLElement): FateType {
+  private getAdditonalStyle(element: HTMLElement): Array<FateType> {
+    let style = element.style;
+    switch (style.textAlign) {
+      case 'left':
+        return [FateType.ALIGN_LEFT];
+      case 'center':
+        return [FateType.ALIGN_CENTER];
+      case 'right':
+        return [FateType.ALIGN_RIGHT];
+      case 'justify':
+        return [FateType.JUSTIFY];
+    }
+    switch (element.getAttribute('align')) {
+      case 'left':
+        return [FateType.ALIGN_LEFT];
+      case 'center':
+        return [FateType.ALIGN_CENTER];
+      case 'right':
+        return [FateType.ALIGN_RIGHT];
+      case 'justify':
+        return [FateType.JUSTIFY];
+    }
+    return [];
+  }
+
+  private parseType(element: HTMLElement): Array<FateType> {
+    let types: Array<FateType> = [];
     switch(element.nodeName) {
       case 'H1':
-        return FateType.HEADER1;
+        return [FateType.HEADER1,...this.getAdditonalStyle(element)];
       case 'H2':
-        return FateType.HEADER2;
+        return [FateType.HEADER2,...this.getAdditonalStyle(element)];
       case 'H3':
-        return FateType.HEADER3;
+        return [FateType.HEADER3,...this.getAdditonalStyle(element)];
       case 'H4':
-        return FateType.HEADER4;
+        return [FateType.HEADER4,...this.getAdditonalStyle(element)];
       case 'H5':
-        return FateType.HEADER5;
+        return [FateType.HEADER5,...this.getAdditonalStyle(element)];
       case 'H6':
-        return FateType.HEADER6;
+        return [FateType.HEADER6,...this.getAdditonalStyle(element)];
       case 'B':
       case 'STRONG':
-        return FateType.BOLD;
+        return [FateType.BOLD];
       case 'I':
       case 'EM':
-        return FateType.ITALIC;
+        return [FateType.ITALIC];
       case 'U':
-        return FateType.UNDERLINE;
+        return [FateType.UNDERLINE];
       case 'STRIKE':
-        return FateType.STRIKETHROUGH;
+        return [FateType.STRIKETHROUGH];
       case 'SUB':
-        return FateType.SUBSCRIPT;
+        return [FateType.SUBSCRIPT];
       case 'SUP':
-        return FateType.SUPERSCRIPT;
+        return [FateType.SUPERSCRIPT];
       case 'OL':
-        return FateType.ORDERED_LIST;
+        return [FateType.ORDERED_LIST];
       case 'UL':
-        return FateType.UNORDERED_LIST;
+        return [FateType.UNORDERED_LIST];
       case 'LI':
-        return FateType.LISTITEM;
+        return [FateType.LISTITEM];
       case 'DIV':
       case 'P':
-        let style = element.style;
-        switch (style.textAlign) {
-          case 'left':
-            return FateType.ALIGN_LEFT;
-          case 'center':
-            return FateType.ALIGN_CENTER;
-          case 'right':
-            return FateType.ALIGN_RIGHT;
-          case 'justify':
-            return FateType.JUSTIFY;
-        }
-        return FateType.PARAGRAPH;
+        return [FateType.PARAGRAPH,...this.getAdditonalStyle(element)];
       // TODO more
       default:
-        return FateType.NONE;
+        return [FateType.NONE];
     }
   }
 
   private serializeType(tree: FateTree): string {
     switch (tree.type) {
       case FateType.PARAGRAPH:
-        return '<p>' + this.serialize(tree) + '</p>';
+        return '<div>' + this.serialize(tree) + '</div>';
       case FateType.HEADER1:
         return '<h1>' + this.serialize(tree) + '</h1>';
       case FateType.HEADER2:
