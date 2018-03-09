@@ -81,6 +81,16 @@ export class FateHtmlParserService {
           case 'justify':
             return FateType.JUSTIFY;
         }
+        switch (element.getAttribute('align')) {
+          case 'left':
+            return FateType.ALIGN_LEFT;
+          case 'center':
+            return FateType.ALIGN_CENTER;
+          case 'right':
+            return FateType.ALIGN_RIGHT;
+          case 'justify':
+            return FateType.JUSTIFY;
+        }
         return FateType.PARAGRAPH;
       // TODO more
       default:
@@ -91,7 +101,7 @@ export class FateHtmlParserService {
   private serializeType(tree: FateTree): string {
     switch (tree.type) {
       case FateType.PARAGRAPH:
-        return '<p>' + this.serialize(tree) + '</p>';
+        return '<div>' + this.serialize(tree) + '</div>';
       case FateType.HEADER1:
         return '<h1>' + this.serialize(tree) + '</h1>';
       case FateType.HEADER2:
