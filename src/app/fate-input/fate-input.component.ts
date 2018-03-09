@@ -11,7 +11,7 @@ import { FateParserService } from '../fate-parser.service';
 @Component({
   selector: 'fate-input',
   template: `
-    <div [class]="'fate-edit-target ' + customClass" contenteditable="true" [innerHtml]="content || '&nbsp;'"></div>
+    <div [class]="'fate-edit-target ' + customClass" contenteditable="true" [innerHtml]="content"></div>
   `,
   styles: [`
     :host div.fate-edit-target {
@@ -68,6 +68,9 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
 
     this.editTarget.addEventListener('input', (event: any) => {
       console.debug('value changed:', this.editTarget.innerHTML);
+      if (this.editTarget.innerHTML === '') {
+        this.editTarget.innerHTML = '<br>';
+      }
       let tree = this.htmlParser.parseElement(this.editTarget);
       this.changed.forEach(f => f(this.parser.serialize(tree)));
     });
@@ -128,7 +131,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     if (value) {
       this.content = this.sanitizer.bypassSecurityTrustHtml(this.htmlParser.serialize(this.parser.parse(value)));
     } else {
-      this.content = '';
+      this.content = '<br>';
     }
   }
 
