@@ -26,6 +26,7 @@ deploy:
     skip-cleanup: true
     github-token: $GH_TOKEN
     local-dir: docs
+    verbose: true
     on:
       branch: master
 after_deploy:
