@@ -23,6 +23,8 @@ deploy:
     on:
       branch: master
   - provider: pages
+    edge:
+      branch: pages-ivar-set
     skip-cleanup: true
     github-token: $GH_TOKEN
     local-dir: docs
