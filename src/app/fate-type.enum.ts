@@ -26,4 +26,5 @@ export enum FateType {
   ORDERED_LIST,
   UNORDERED_LIST,
   LISTITEM,
+  INDENT,
 }

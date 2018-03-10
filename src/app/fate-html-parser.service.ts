@@ -79,7 +79,6 @@ export class FateHtmlParserService {
     return [];
   }
 
-  // FIXME detect indentation on non-list blocks
   private parseType(element: HTMLElement): Array<FateType> {
     let types: Array<FateType> = [];
     switch(element.nodeName) {
@@ -118,6 +117,12 @@ export class FateHtmlParserService {
       case 'DIV':
       case 'P':
         return [FateType.PARAGRAPH,...this.getAdditonalStyle(element)];
+      case 'BLOCKQUOTE':
+        // FIXME: this doesn't work on FF
+        if (element.style.marginLeft === '40px') {
+          return [FateType.INDENT];
+        }
+        return [FateType.NONE];
       // TODO more
       default:
         return [FateType.NONE];
@@ -172,6 +177,8 @@ export class FateHtmlParserService {
         return '<div style="text-align: right">' + this.serialize(tree) + '</div>';
       case FateType.JUSTIFY:
         return '<div style="text-align: justify;">' + this.serialize(tree) + '</div>';
+      case FateType.INDENT:
+        return '<blockquote style="margin-left: 40px">' + this.serialize(tree) + '</blockquote>';
       case FateType.NONE:
         return this.serialize(tree);
     }
