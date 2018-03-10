@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 
 import { Subject } from 'rxjs/Subject';
 
+import { FateType } from './fate-type.enum';
+
 interface Command {
   name: string;
   value : any;
@@ -10,7 +12,157 @@ interface Command {
 @Injectable()
 export class FateControllerService {
 
+  // List of available commands, alphabetically
+  // see https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
+  protected actionMapping = {
+    'bold' : {
+      command: 'bold',
+      name: 'Bold',
+      detect: FateType.BOLD
+    },
+    'italic' : {
+      command: 'italic',
+      name: 'Italic',
+      detect: FateType.ITALIC
+    },
+    'underline' : {
+      command: 'underline',
+      name: 'Underlined',
+      detect: FateType.UNDERLINE
+    },
+    'strike' : {
+      command: 'strikeThrough',
+      name: 'Strike Through',
+      detect: FateType.STRIKETHROUGH
+    },
+    'subscript' : {
+      command: 'subscript',
+      name: 'Subscript',
+      label: 'sub',
+      detect: FateType.SUBSCRIPT
+    },
+    'superscript' : {
+      command: 'superscript',
+      name: 'Superscript',
+      label: 'sup',
+      detect: FateType.SUPERSCRIPT
+    },
+    'heading1' : {
+      command: 'formatBlock',
+      value: 'H1',
+      option: 1,
+      name: '1st Header',
+      label: 'h1',
+      detect: FateType.HEADER1
+    },
+    'heading2' : {
+      command: 'formatBlock',
+      value: 'H2',
+      option: 2,
+      name: '2nd Header',
+      label: 'h2',
+      detect: FateType.HEADER2
+    },
+    'heading3' : {
+      command: 'formatBlock',
+      value: 'H3',
+      option: 3,
+      name: '3rd Header',
+      label: 'h3',
+      detect: FateType.HEADER3
+    },
+    'heading4' : {
+      command: 'formatBlock',
+      value: 'H4',
+      option: 4,
+      name: '4th Header',
+      label: 'h4',
+      detect: FateType.HEADER4
+    },
+    'heading5' : {
+      command: 'formatBlock',
+      _value: 'H5',
+      option: 5,
+      name: '5th Header',
+      label: 'h5',
+      detect: FateType.HEADER5
+    },
+    'heading6' : {
+      command: 'formatBlock',
+      value: 'H6',
+      option: 6,
+      name: '6th Header',
+      label: 'h6',
+      detect: FateType.HEADER6
+    },
+    'normal' : {
+      command: 'normal',
+      value: 'DIV',
+      name: 'Body',
+      label: 'p',
+      detect: FateType.PARAGRAPH
+    },
+    'indent' : {
+      command: 'indent',
+      name: 'Indent',
+    },
+    'outdent' : {
+      command: 'outdent',
+      name: 'Outdent',
+    },
+    'ordered' : {
+      command: 'insertOrderedList',
+      name: 'Ordered List',
+      detect: FateType.ORDERED_LIST
+    },
+    'unordered' : {
+      command: 'insertUnorderedList',
+      name: 'Unorder List',
+      detect: FateType.UNORDERED_LIST
+    },
+    'center' : {
+      command: 'justifyCenter',
+      name: 'Center',
+      detect: FateType.ALIGN_CENTER
+    },
+    'justify' : {
+      command: 'justifyFull',
+      name: 'Justify',
+      detect: FateType.JUSTIFY
+    },
+    'left' : {
+      command: 'justifyLeft',
+      name: 'Left',
+      detect: FateType.ALIGN_LEFT
+    },
+    'right' : {
+      command: 'justifyRight',
+      name: 'Right',
+      detect: FateType.ALIGN_RIGHT
+    },
+    'undo' : {
+      command: 'undo',
+      name: 'Undo',
+    },
+    'redo' : {
+      command: 'redo',
+      name: 'Redo',
+    },
+    'clean' : {
+      command: 'removeFormat',
+      name: 'Remove Formating',
+    },
+  };
+
+  public getAction(actionName): boolean | any {
+    return this.actionMapping[actionName] || false;
+  }
+
   private commands = {
+    default: new Subject<Command>()
+  };
+
+  private enabledActions = {
     default: new Subject<Command>()
   };
 
@@ -23,85 +175,27 @@ export class FateControllerService {
     return this.commands[channelId];
   }
 
-  // List of available commands, alphabetically
-  // see https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
-  public bold(channel) {
-    this.commands[channel].next({name: 'bold', value: ''});
+  public enabled(channelId) {
+    if (!this.enabledActions[channelId]) {
+      this.enabledActions[channelId] = new Subject<Command>();
+    }
+    return this.enabledActions[channelId];
   }
-  public link(channel, value) {
-    this.commands[channel].next({name: 'createLink', value: value});
+
+  public enableActions(channelId, types) {
+    let actions: Array<string> = [];
+    for (let type of types) {
+      for (let action in this.actionMapping) {
+        if (this.actionMapping[action].detect && this.actionMapping[action].detect === type) {
+          actions.push(action);
+        }
+      }
+    }
+    this.enabledActions[channelId].next(actions);
   }
-  public fontSize(channel, size) {
-    this.commands[channel].next({name: 'fontSize', value: size});
+
+
+  public do(channel, action) {
+    this.commands[channel].next({name: this.actionMapping[action].command, value: this.actionMapping[action].value});
   }
-  public foreColor(channel, color) {
-    this.commands[channel].next({name: 'foreColor', value: color});
-  }
-  public heading(channel, level) { // Not IE ?, should test and possibly add < >
-    this.commands[channel].next({name: 'formatBlock', value: 'H' + level});
-  }
-  public normal(channel, level) { // Not IE ?, should test and possibly add < >
-    this.commands[channel].next({name: 'formatBlock', value: 'DIV'});
-  }
-  public hiliteColor(channel, color) {
-    this.commands[channel].next({name: 'hiliteColor', value: color});
-  }
-  public indent(channel) {
-    this.commands[channel].next({name: 'indent', value: ''});
-  }
-  public insertImage(channel, url) {
-    this.commands[channel].next({name: 'insertImage', value: url});
-  }
-  public insertOrderedList(channel) {
-    this.commands[channel].next({name: 'insertOrderedList', value: ''});
-  }
-  public insertUnorderedList(channel) {
-    this.commands[channel].next({name: 'insertUnorderedList', value: ''});
-  }
-  public insertParagraph(channel) {
-    this.commands[channel].next({name: 'insertParagraph', value: ''});
-  }
-  public italic(channel) {
-    this.commands[channel].next({name: 'italic', value: ''});
-  }
-  public justifyCenter(channel) {
-    this.commands[channel].next({name: 'justifyCenter', value: ''});
-  }
-  public justifyFull(channel) {
-    this.commands[channel].next({name: 'justifyFull', value: ''});
-  }
-  public justifyLeft(channel) {
-    this.commands[channel].next({name: 'justifyLeft', value: ''});
-  }
-  public justifyRight(channel) {
-    this.commands[channel].next({name: 'justifyRight', value: ''});
-  }
-  public outdent(channel) {
-    this.commands[channel].next({name: 'outdent', value: ''});
-  }
-  public redo(channel) {
-    this.commands[channel].next({name: 'redo', value: ''});
-  }
-  public removeFormat(channel) {
-    this.commands[channel].next({name: 'removeFormat', value: ''});
-  }
-  public strikeThrough(channel) {
-    this.commands[channel].next({name: 'strikeThrough', value: ''});
-  }
-  public subscript(channel) {
-    this.commands[channel].next({name: 'subscript', value: ''});
-  }
-  public superscript(channel) {
-    this.commands[channel].next({name: 'superscript', value: ''});
-  }
-  public underline(channel) {
-    this.commands[channel].next({name: 'underline', value: ''});
-  }
-  public undo(channel) {
-    this.commands[channel].next({name: 'undo', value: ''});
-  }
-  public unlink(channel) {
-    this.commands[channel].next({name: 'unlink', value: ''});
-  }
-  // styleWithCSS as fallback for some things ?
 }

@@ -44,6 +44,16 @@ export class FateHtmlParserService {
     return node;
   }
 
+  public findParentTypes(node: Node, until: Node): Array<FateType> {
+    let types: Array<FateType> = [];
+    let current: HTMLElement = (node.nodeType === 1)? (node as HTMLElement) : node.parentElement;
+    while (current !== until) {
+      types.push(...this.parseType(current));
+      current = current.parentElement;
+    }
+    return types;
+  }
+
   private getAdditonalStyle(element: HTMLElement): Array<FateType> {
     let style = element.style;
     switch (style.textAlign) {
@@ -69,6 +79,7 @@ export class FateHtmlParserService {
     return [];
   }
 
+  // FIXME detect indentation on non-list blocks
   private parseType(element: HTMLElement): Array<FateType> {
     let types: Array<FateType> = [];
     switch(element.nodeName) {
@@ -178,4 +189,12 @@ export class FateHtmlParserService {
     });
     return serialized;
   };
+
+  public detectActions(node) {
+    let actions: Array<string> = [];
+    if (node.parentElement.nodeName === 'B' || node.parentElement.nodeName === 'STRONG') {
+      actions.push('bold');
+    }
+    return actions;
+  }
 }
