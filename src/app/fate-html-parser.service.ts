@@ -44,6 +44,16 @@ export class FateHtmlParserService {
     return node;
   }
 
+  public findParentTypes(node: Node, until: Node): Array<FateType> {
+    let types: Array<FateType> = [];
+    let current: HTMLElement = (node.nodeType === 1)? (node as HTMLElement) : node.parentElement;
+    while (current !== until) {
+      types.push(...this.parseType(current));
+      current = current.parentElement;
+    }
+    return types;
+  }
+
   private getAdditonalStyle(element: HTMLElement): Array<FateType> {
     let style = element.style;
     switch (style.textAlign) {
@@ -107,6 +117,12 @@ export class FateHtmlParserService {
       case 'DIV':
       case 'P':
         return [FateType.PARAGRAPH,...this.getAdditonalStyle(element)];
+      case 'BLOCKQUOTE':
+        // FIXME: this doesn't work on FF
+        if (element.style.marginLeft === '40px') {
+          return [FateType.INDENT];
+        }
+        return [FateType.NONE];
       // TODO more
       default:
         return [FateType.NONE];
@@ -161,6 +177,8 @@ export class FateHtmlParserService {
         return '<div style="text-align: right">' + this.serialize(tree) + '</div>';
       case FateType.JUSTIFY:
         return '<div style="text-align: justify;">' + this.serialize(tree) + '</div>';
+      case FateType.INDENT:
+        return '<blockquote style="margin-left: 40px">' + this.serialize(tree) + '</blockquote>';
       case FateType.NONE:
         return this.serialize(tree);
     }
@@ -178,4 +196,12 @@ export class FateHtmlParserService {
     });
     return serialized;
   };
+
+  public detectActions(node) {
+    let actions: Array<string> = [];
+    if (node.parentElement.nodeName === 'B' || node.parentElement.nodeName === 'STRONG') {
+      actions.push('bold');
+    }
+    return actions;
+  }
 }

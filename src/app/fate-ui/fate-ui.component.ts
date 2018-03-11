@@ -1,4 +1,6 @@
-import { Component, Input, HostListener } from '@angular/core';
+import { Component, Input, HostListener, OnChanges } from '@angular/core';
+
+import { Subscription } from 'rxjs/Subscription';
 
 import { FateControllerService } from '../fate-controller.service';
 import { FateParserService } from '../fate-parser.service';
@@ -9,7 +11,7 @@ import { FateIconService } from '../fate-icon.service';
   templateUrl: './fate-ui.component.html',
   styleUrls: ['./fate-ui.component.scss']
 })
-export class FateUiComponent {
+export class FateUiComponent implements OnChanges {
 
   @Input()
   public uiId: string = 'default';
@@ -47,15 +49,30 @@ export class FateUiComponent {
     'clean'
   ];
 
-  constructor(private controller: FateControllerService, public icon: FateIconService, public parser: FateParserService) { }
+  public enabled: Array<string> = [];
+
+  private inputSubscription: Subscription;
+
+  constructor(public controller: FateControllerService, public icon: FateIconService, private parser: FateParserService) { }
 
   @HostListener('mousedown', ['$event'])
   public mouseDown(event) {
     event.preventDefault();
   }
 
-  public do(event, command, value) {
+  public do(event, action) {
     event.preventDefault();
-    this.controller[command](this.uiId, value);
+    this.controller.do(this.uiId, action);
+  }
+
+  public ngOnChanges(changes) {
+    if (changes['uiId']) {
+      if (this.inputSubscription) {
+        this.inputSubscription.unsubscribe();
+      }
+      this.inputSubscription = this.controller.enabled(this.uiId).subscribe((actions) => {
+        this.enabled = actions;
+      });
+    }
   }
 }

@@ -123,16 +123,18 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       console.debug('got command ' + command.name + '/' + command.value + ' on channel ' + uiId);
       this.editTarget.focus();
       document.execCommand(command.name, false, command.value);
+      this.saveSelection()
     });
   }
 
   // Saves the current text selection
   private selectionRange: Range;
   private saveSelection() {
-    console.debug('saveSelection');
     let sel = window.getSelection();
     if (sel.getRangeAt && sel.rangeCount) {
       this.selectionRange =  sel.getRangeAt(0);
+      this.detectStyle();
+      console.debug('saveSelection', this.selectionRange);
     }
   }
   // Restors the current text selection
@@ -143,6 +145,12 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       sel.removeAllRanges();
       sel.addRange(this.selectionRange);
     }
+  }
+
+  private detectStyle() {
+    let types = this.htmlParser.findParentTypes(this.selectionRange.commonAncestorContainer, this.editTarget);
+    console.info('detected actions: ', types);
+    this.controller.enableActions(this.uiId, types);
   }
 
   // implentation of ControlValueAccessor:

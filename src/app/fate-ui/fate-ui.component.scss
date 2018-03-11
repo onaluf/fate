@@ -34,10 +34,11 @@ $font-size: 14px;
   transition: background 300ms;
   border-radius: 3px;
 
-  &:hover {
+  &:active,
+  &.enabled {
     background-color: rgba(0,0,0,0.1);
   }
-  &:active {
+  &:hover {
     background-color: rgba(0,0,0,0.2);
   }
 
