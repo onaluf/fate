@@ -161,7 +161,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       this.content = this.sanitizer.bypassSecurityTrustHtml(this.htmlParser.serialize(this.parser.parse(value)));
       this.empty = false;
     } else {
-      this.content = '<br>';
+      this.content = this.sanitizer.bypassSecurityTrustHtml('<br>');
       this.empty = true;
     }
   }
