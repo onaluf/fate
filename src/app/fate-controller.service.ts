@@ -96,9 +96,9 @@ export class FateControllerService {
       detect: FateType.HEADER6
     },
     'normal' : {
-      command: 'normal',
+      command: 'formatBlock',
       value: 'DIV',
-      name: 'Body',
+      name: 'Normal',
       label: 'p',
       detect: FateType.PARAGRAPH
     },
