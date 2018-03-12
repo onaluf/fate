@@ -132,19 +132,19 @@ export class FateHtmlParserService {
   private serializeType(tree: FateTree): string {
     switch (tree.type) {
       case FateType.PARAGRAPH:
-        return '<div>' + this.serialize(tree) + '</div>';
+        return '<div>' + this.serialize(tree, true) + '</div>';
       case FateType.HEADER1:
-        return '<h1>' + this.serialize(tree) + '</h1>';
+        return '<h1>' + this.serialize(tree, true) + '</h1>';
       case FateType.HEADER2:
-        return '<h2>' + this.serialize(tree) + '</h2>';
+        return '<h2>' + this.serialize(tree, true) + '</h2>';
       case FateType.HEADER3:
-        return '<h3>' + this.serialize(tree) + '</h3>';
+        return '<h3>' + this.serialize(tree, true) + '</h3>';
       case FateType.HEADER4:
-        return '<h4>' + this.serialize(tree) + '</h4>';
+        return '<h4>' + this.serialize(tree, true) + '</h4>';
       case FateType.HEADER5:
-        return '<h5>' + this.serialize(tree) + '</h5>';
+        return '<h5>' + this.serialize(tree, true) + '</h5>';
       case FateType.HEADER6:
-        return '<h6>' + this.serialize(tree) + '</h6>';
+        return '<h6>' + this.serialize(tree, true) + '</h6>';
       case FateType.QUOTE:
         return '<quote>' + this.serialize(tree) + '</quote>';
       case FateType.CODE:
@@ -170,22 +170,22 @@ export class FateHtmlParserService {
       case FateType.LISTITEM:
         return '<li>' + this.serialize(tree) + '</li>';
       case FateType.ALIGN_LEFT:
-        return '<div style="text-align: left;">' + this.serialize(tree) + '</div>';
+        return '<div style="text-align: left;">' + this.serialize(tree, true) + '</div>';
       case FateType.ALIGN_CENTER:
-        return '<div style="text-align: center;">' + this.serialize(tree) + '</div>';
+        return '<div style="text-align: center;">' + this.serialize(tree, true) + '</div>';
       case FateType.ALIGN_RIGHT:
-        return '<div style="text-align: right">' + this.serialize(tree) + '</div>';
+        return '<div style="text-align: right">' + this.serialize(tree, true) + '</div>';
       case FateType.JUSTIFY:
-        return '<div style="text-align: justify;">' + this.serialize(tree) + '</div>';
+        return '<div style="text-align: justify;">' + this.serialize(tree, true) + '</div>';
       case FateType.INDENT:
-        return '<blockquote style="margin-left: 40px">' + this.serialize(tree) + '</blockquote>';
+        return '<blockquote style="margin-left: 40px">' + this.serialize(tree, true) + '</blockquote>';
       case FateType.NONE:
         return this.serialize(tree);
     }
   };
 
   // Saves a Tree in string representation
-  public serialize (tree: FateTree): string {
+  public serialize (tree: FateTree, fallbackToBr: boolean = false): string {
     let serialized = '';
     tree.children.forEach((child) => {
       if (typeof child === 'string') {
@@ -194,6 +194,9 @@ export class FateHtmlParserService {
         serialized += this.serializeType(child);
       }
     });
+    if (fallbackToBr && !serialized) {
+      serialized = '<br>';
+    }
     return serialized;
   };
 
