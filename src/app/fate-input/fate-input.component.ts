@@ -88,6 +88,8 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       if (this.editTarget.innerHTML === '') {
         this.editTarget.innerHTML = '<br>';
         this.empty = true;
+      } else if (this.editTarget.innerHTML === '<br>') {
+        this.empty = true;
       } else {
         this.empty = false;
       }
