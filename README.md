@@ -2,7 +2,7 @@
 
 # Flexible Angular Text Editor
 
-Fate is a rich text editor natively written for angular (>= v2) in typescript with footprint and flexibility in mind. Its goal is to be very easy to customize and be as small as it can thanks to tree shaking. Bootstrap and Google Material styled version are included to fit in forms using those styles. To use the material one you will need to include [Angular Material]("https://material.angular.io) in your project.
+Fate is a rich text editor (wysiwyg) natively written for angular (>= v2) in typescript with footprint and flexibility in mind. Its goal is to be very easy to customize and be as small as it can thanks to tree shaking. Bootstrap and Google Material styled version are included to fit in forms using those styles. To use the material one you will need to include [Angular Material]("https://material.angular.io) in your project.
 
 Be warned that it's very early in the development of this module so many thing will change.
 
