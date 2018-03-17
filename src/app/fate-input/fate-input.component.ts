@@ -66,24 +66,24 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     }
 
     this.editTarget.addEventListener('click', (event: any) => {
-      console.info('click');
+      console.debug('click');
       // On click we save the text Selection
       this.saveSelection();
     });
 
     this.editTarget.addEventListener('focus', (event: any) => {
-      console.info('focus');
+      console.debug('focus');
       // On focus we restore it
       this.restoreSelection();
       this.isFocused = true;
     });
     this.editTarget.addEventListener('blur', (event: any) => {
-      console.info('blur');
+      console.debug('blur');
       this.isFocused = false;
     });
 
     this.editTarget.addEventListener('input', (event: any) => {
-      console.info('input');
+      console.debug('input');
       console.debug('value changed:', this.editTarget.innerHTML);
       if (this.editTarget.innerHTML === '') {
         this.editTarget.innerHTML = '<br>';
@@ -124,7 +124,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
 
   private uiSubscription: Subscription;
   private subscribeToUi(uiId) {
-    console.debug('subsciping to ' + uiId, this.uiSubscription);
+    console.debug('subscribing to ' + uiId, this.uiSubscription);
     if (this.uiSubscription) {
       this.uiSubscription.unsubscribe();
     }
@@ -145,8 +145,8 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     let sel = window.getSelection();
     if (sel.getRangeAt && sel.rangeCount) {
       this.selectionRange =  sel.getRangeAt(0);
-      this.detectStyle();
       console.debug('saveSelection', this.selectionRange);
+      this.detectStyle();
     }
   }
   // Restors the current text selection
@@ -160,9 +160,30 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   }
 
   private detectStyle() {
-    let nodes = this.htmlParser.findParentNodes(this.selectionRange.commonAncestorContainer, this.editTarget);
-    console.info('detected actions: ', nodes);
-    this.controller.enableActions(this.uiId, nodes);
+    let node = this.selectionRange.commonAncestorContainer;
+    if (!node || (!(node.parentElement.closest('.fate-edit-target') && node !== this.editTarget)) {
+      // The current selection is not contained in the editable zone.
+      // this is most likely due to the input being empty.
+      return;
+    }
+    // special cases for FF when selection is obtained by double click:
+    if ((this.selectionRange.endOffset === 0) &&
+        (this.selectionRange.startContainer.nodeValue) &&
+        (this.selectionRange.startOffset === this.selectionRange.startContainer.nodeValue.length)) {
+      node = this.selectionRange.startContainer.nextSibling;
+    } else if ((this.selectionRange.endOffset === 0) &&
+        (this.selectionRange.startOffset === 0)) {
+      node = this.selectionRange.startContainer.parentElement;
+    } else if ((this.selectionRange.commonAncestorContainer === this.editTarget) &&
+               (this.selectionRange.startContainer === this.editTarget) &&
+               (this.selectionRange.endContainer === this.editTarget)) {
+      node = this.selectionRange.commonAncestorContainer.childNodes[this.selectionRange.startOffset];
+    }
+    if (node && node !== this.editTarget) {
+      let nodes = this.htmlParser.findParentNodes(node, this.editTarget);
+      console.debug('  -> detected actions: ', nodes);
+      this.controller.enableActions(this.uiId, nodes);
+    }
   }
 
   // implentation of ControlValueAccessor:
@@ -176,6 +197,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       this.content = this.sanitizer.bypassSecurityTrustHtml('<br>');
       this.empty = true;
     }
+    this.selectionRange = undefined;
   }
 
   public registerOnChange(fn: (value: string) => void) {

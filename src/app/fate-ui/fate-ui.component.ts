@@ -81,7 +81,7 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
         // Enable the dropdown
         this.dropdownAction = action;
         this.dropdownValue = this.enabled[action];
-        console.info('action has value', button ,dropdown);
+        console.debug('action has value', button, dropdown);
 
         // Postion the dropdown
         setTimeout(() => {
@@ -94,7 +94,7 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
           let topPosition = button.offsetTop + buttonSize.height - 3;
           dropdown.style.left = leftPosition + 'px';
           dropdown.style.top = topPosition + 'px';
-        }, 0)
+        }, 0);
       }
     } else {
       this.dropdownAction = false;
