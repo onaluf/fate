@@ -163,7 +163,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
 
   private detectStyle() {
     let node = this.selectionRange.commonAncestorContainer;
-    if (!node || (!(node.parentElement.closest('.fate-edit-target') && node !== this.editTarget)) {
+    if (!node || (!(node.parentElement.closest('.fate-edit-target') && node !== this.editTarget))) {
       // The current selection is not contained in the editable zone.
       // this is most likely due to the input being empty.
       return;
