@@ -125,8 +125,8 @@ export class FateMaterialComponent extends FateUiComponent implements  ControlVa
 
   private changed = new Array<(value: string) => void>();
 
-  constructor(controller: FateControllerService, parser: FateParserService, icon: FateIconService, private el: ElementRef, @Optional() @Self() public ngControl: NgControl) {
-    super(controller, icon, parser);
+  constructor(controller: FateControllerService, parser: FateParserService, icon: FateIconService, el: ElementRef, @Optional() @Self() public ngControl: NgControl) {
+    super(el, controller, icon, parser);
     this.uiId = 'material-' + (instanceCounter++);
     // Setting the value accessor directly (instead of using
     // the providers) to avoid running into a circular import.

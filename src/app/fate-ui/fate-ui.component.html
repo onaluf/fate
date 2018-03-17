@@ -1,10 +1,17 @@
 <div>
   <ng-container *ngFor="let button of buttons">
-    <a *ngIf="button !== 'separator'" class="fate-ui-button" [ngClass]="{enabled: enabled.indexOf(button) > -1}" (click)="do($event, button)">
+    <a *ngIf="button !== 'separator'" class="fate-ui-button" [ngClass]="{enabled: enabled[button], 'with-dropdown': dropdownAction === button}" (click)="do($event, button)">
       <span *ngIf="icon.getIcon(button)" [innerHtml]="icon.getIcon(button)"></span>
       <span *ngIf="!icon.getIcon(button)">{{controller.getAction(button).label}}</span>
       <span class="reader">{{controller.getAction(button).name}}</span>
     </a>
     <div *ngIf="button === 'separator'" class="fate-ui-separator"></div>
   </ng-container>
+  <div class="fate-ui-dropdown" [ngClass]="{visible: dropdownAction}">
+    <ng-container [ngSwitch]="dropdownAction">
+      <ng-container *ngSwitchCase="'link'">
+        <input type="text" [ngModel]="dropdownValue" (ngModelChange)="dropdownValueChange($event)" placeholder="http://">
+      </ng-container>
+    </ng-container>
+  </div>
 </div>

@@ -22,6 +22,40 @@
       opacity: 1;
       pointer-events: all;
     }
+
+    padding: 0;
+    /deep/ .fate-ui-button {
+      height: 40px;
+      line-height: 23px;
+      padding: 7px 0 11px;
+      width: 40px;
+
+      border-radius: 0;
+      margin-right: -4px;
+      margin-bottom: 0;
+      vertical-align: middle;
+
+      &:active,
+      &.enabled,
+      &.with-dropdown {
+        background-color: #EEE;
+      }
+      &:hover {
+        background-color: #DFDFDF;
+      }
+    }
+    /deep/ .fate-ui-dropdown {
+      background-color: #EEE;
+    }
+    /deep/ .fate-ui-separator {
+      margin-right: -4px;
+      height: 34px;
+      border-radius: 0;
+      margin-bottom: 3px;
+      width: 1px;
+      vertical-align: middle;
+      background-color: #DFDFDF;
+    }
   }
 
   fate-input {

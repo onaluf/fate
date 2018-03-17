@@ -22,7 +22,8 @@ export class FateIconService implements FateIcon {
     'right' : '<i class="fas fa-align-right"></i>',
     'undo' : '<i class="fas fa-undo-alt"></i>',
     'redo' : '<i class="fas fa-redo-alt"></i>',
-    'clean' : '<i class="fas fa-eraser"></i>'
+    'clean' : '<i class="fas fa-eraser"></i>',
+    'link' : '<i class="fas fa-link"></i>',
   };
 
   public getIcon(actionName): string {

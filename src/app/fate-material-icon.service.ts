@@ -20,6 +20,7 @@ export class FateMaterialIconService extends FateIconService {
     'right' : '<i class="material-icons">format_align_right</i>',
     'undo' : '<i class="material-icons">undo</i>',
     'redo' : '<i class="material-icons">redo</i>',
-    'clean' : '<i class="material-icons">format_clear</i>'
+    'clean' : '<i class="material-icons">format_clear</i>',
+    'link' : '<i class="material-icons">link</i>',
   };
 }
