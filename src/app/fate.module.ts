@@ -21,9 +21,8 @@ export { FateInputComponent } from './fate-input/fate-input.component';
 export { FateIconService } from './fate-icon.service';
 export { FateMaterialIconService } from './fate-material-icon.service';
 export { FateParserService } from './fate-parser.service';
-export { FateTree } from './fate-tree';
+export { FateNode } from './fate-node';
 export { FateType } from './fate-type.enum';
-export { FateStyle } from './fate-style.enum';
 
 @NgModule({
   declarations: [

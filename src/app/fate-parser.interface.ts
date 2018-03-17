@@ -1,6 +1,6 @@
-import { FateTree } from './fate-tree';
+import { FateNode } from './fate-node';
 
 export interface FateParser {
-  parse(html: string): FateTree
-  serialize (tree: FateTree): string;
+  parse(html: string): FateNode
+  serialize (tree: FateNode): string;
 }

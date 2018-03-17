@@ -10,6 +10,7 @@ $font-size: 14px;
   background: #FFF;
   color: #333;
   user-select: none;
+  position: relative;
 }
 .fate-ui-separator {
   display: inline-block;
@@ -30,19 +31,37 @@ $font-size: 14px;
   cursor: pointer;
   font-size: $font-size;
 
-  background-color: rgba(0,0,0,0.0);
   transition: background 300ms;
   border-radius: 3px;
 
   &:active,
-  &.enabled {
-    background-color: rgba(0,0,0,0.1);
+  &.enabled,
+  &.with-dropdown {
+    background-color: #E5E5E5;
   }
   &:hover {
-    background-color: rgba(0,0,0,0.2);
+    background-color: #CCC;
   }
 
   span.reader {
     display: none;
+  }
+}
+.fate-ui-dropdown {
+  display: none;
+  z-index: 1;
+  font-size: 14px;
+  user-select: all;
+
+  border-radius: 3px;
+  background-color: #E5E5E5;
+  position: absolute;
+  padding: 10px;
+  border-bottom: 1px solid #CCC;
+
+  box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.3);
+
+  &.visible {
+    display: block;
   }
 }

@@ -152,8 +152,16 @@ export class FateControllerService {
       command: 'removeFormat',
       name: 'Remove Formating',
     },
+    'link' : {
+      command: 'createLink',
+      undo: 'unlink',
+      name: 'Link',
+      detect: FateType.LINK,
+      hasValue: {
+        type: 'string'
+      }
+    }
   };
-
   public getAction(actionName): boolean | any {
     return this.actionMapping[actionName] || false;
   }
@@ -163,7 +171,7 @@ export class FateControllerService {
   };
 
   private enabledActions = {
-    default: new Subject<Command>()
+    default: new Subject<any>()
   };
 
   constructor() { }
@@ -177,17 +185,17 @@ export class FateControllerService {
 
   public enabled(channelId) {
     if (!this.enabledActions[channelId]) {
-      this.enabledActions[channelId] = new Subject<Command>();
+      this.enabledActions[channelId] = new Subject<any>();
     }
     return this.enabledActions[channelId];
   }
 
-  public enableActions(channelId, types) {
-    let actions: Array<string> = [];
-    for (let type of types) {
+  public enableActions(channelId, nodes) {
+    let actions: Array<any> = [];
+    for (let node of nodes) {
       for (let action in this.actionMapping) {
-        if (this.actionMapping[action].detect && this.actionMapping[action].detect === type) {
-          actions.push(action);
+        if (this.actionMapping[action].detect && this.actionMapping[action].detect === node.type) {
+          actions.push({action: action, value: node.value});
         }
       }
     }
@@ -195,7 +203,19 @@ export class FateControllerService {
   }
 
 
-  public do(channel, action) {
-    this.commands[channel].next({name: this.actionMapping[action].command, value: this.actionMapping[action].value});
+  public do(channel, action, value?) {
+    if (this.actionMapping[action].hasValue && !value) {
+      if (this.actionMapping[action].undo) {
+        this.commands[channel].next({name: this.actionMapping[action].undo, value: this.actionMapping[action].value || value});
+      } else {
+        throw new Error('Action "' + action + '"doesn\'t have a undo command');
+      }
+    } else {
+      this.commands[channel].next({name: this.actionMapping[action].command, value: this.actionMapping[action].value || value});
+    }
+  }
+
+  public undo(channel, action, value?) {
+    let mapping = this.actionMapping[action].undo;
   }
 }

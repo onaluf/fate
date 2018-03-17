@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { FateTree } from './fate-tree';
-import { FateStyle } from './fate-style.enum';
+import { FateNode } from './fate-node';
 import { FateType } from './fate-type.enum';
 
 import { FateParser } from './fate-parser.interface';
@@ -11,24 +10,18 @@ export class FateHtmlParserService {
 
   constructor() { }
 
-  public parse(html: string): FateTree {
+  public parse(html: string): FateNode {
     let div = document.createElement('div');
     div.innerHTML = html;
     return this.parseElement(div);
   };
 
-  public parseElement(element: HTMLElement): FateTree {
-    let node = new FateTree();
-    let types = this.parseType(element);
-
-    let currentNode = node;
-    for (let i in types) {
-      currentNode.type = types[i];
-      if (parseInt(i, 10) + 1 < types.length) {
-        let newNode = new FateTree();
-        currentNode.children.push(newNode);
-        currentNode = newNode;
-      }
+  public parseElement(element: HTMLElement): FateNode {
+    let nodes = this.parseType(element);;
+    let currentNode = nodes[0];
+    for (let i = 1; i < nodes.length; i++) {
+      currentNode.children.push(nodes[i]);
+      currentNode = nodes[i];
     }
 
     for (let i = 0; i < element.childNodes.length; i ++) {
@@ -41,153 +34,164 @@ export class FateHtmlParserService {
         // ignore
       }
     }
-    return node;
+    return currentNode;
   }
 
-  public findParentTypes(node: Node, until: Node): Array<FateType> {
-    let types: Array<FateType> = [];
+  public findParentNodes(node: Node, until: Node): Array<FateNode> {
+    let nodes: Array<FateNode> = [];
     let current: HTMLElement = (node.nodeType === 1)? (node as HTMLElement) : node.parentElement;
     while (current !== until) {
-      types.push(...this.parseType(current));
+      nodes.push(...this.parseType(current));
       current = current.parentElement;
     }
-    return types;
+    return nodes;
   }
 
-  private getAdditonalStyle(element: HTMLElement): Array<FateType> {
+  private getAdditonalStyle(element: HTMLElement): Array<FateNode> {
     let style = element.style;
     switch (style.textAlign) {
       case 'left':
-        return [FateType.ALIGN_LEFT];
+        return [new FateNode(FateType.ALIGN_LEFT)];
       case 'center':
-        return [FateType.ALIGN_CENTER];
+        return [new FateNode(FateType.ALIGN_CENTER)];
       case 'right':
-        return [FateType.ALIGN_RIGHT];
+        return [new FateNode(FateType.ALIGN_RIGHT)];
       case 'justify':
-        return [FateType.JUSTIFY];
+        return [new FateNode(FateType.JUSTIFY)];
     }
     switch (element.getAttribute('align')) {
       case 'left':
-        return [FateType.ALIGN_LEFT];
+        return [new FateNode(FateType.ALIGN_LEFT)];
       case 'center':
-        return [FateType.ALIGN_CENTER];
+        return [new FateNode(FateType.ALIGN_CENTER)];
       case 'right':
-        return [FateType.ALIGN_RIGHT];
+        return [new FateNode(FateType.ALIGN_RIGHT)];
       case 'justify':
-        return [FateType.JUSTIFY];
+        return [new FateNode(FateType.JUSTIFY)];
     }
     return [];
   }
 
-  private parseType(element: HTMLElement): Array<FateType> {
-    let types: Array<FateType> = [];
+  private parseType(element: HTMLElement): Array<FateNode> {
     switch(element.nodeName) {
       case 'H1':
-        return [FateType.HEADER1,...this.getAdditonalStyle(element)];
+        return [new FateNode(FateType.HEADER1),...this.getAdditonalStyle(element)];
       case 'H2':
-        return [FateType.HEADER2,...this.getAdditonalStyle(element)];
+        return [new FateNode(FateType.HEADER2),...this.getAdditonalStyle(element)];
       case 'H3':
-        return [FateType.HEADER3,...this.getAdditonalStyle(element)];
+        return [new FateNode(FateType.HEADER3),...this.getAdditonalStyle(element)];
       case 'H4':
-        return [FateType.HEADER4,...this.getAdditonalStyle(element)];
+        return [new FateNode(FateType.HEADER4),...this.getAdditonalStyle(element)];
       case 'H5':
-        return [FateType.HEADER5,...this.getAdditonalStyle(element)];
+        return [new FateNode(FateType.HEADER5),...this.getAdditonalStyle(element)];
       case 'H6':
-        return [FateType.HEADER6,...this.getAdditonalStyle(element)];
+        return [new FateNode(FateType.HEADER6),...this.getAdditonalStyle(element)];
       case 'B':
       case 'STRONG':
-        return [FateType.BOLD];
+        return [new FateNode(FateType.BOLD)];
       case 'I':
       case 'EM':
-        return [FateType.ITALIC];
+        return [new FateNode(FateType.ITALIC)];
       case 'U':
-        return [FateType.UNDERLINE];
+        return [new FateNode(FateType.UNDERLINE)];
       case 'STRIKE':
-        return [FateType.STRIKETHROUGH];
+        return [new FateNode(FateType.STRIKETHROUGH)];
       case 'SUB':
-        return [FateType.SUBSCRIPT];
+        return [new FateNode(FateType.SUBSCRIPT)];
       case 'SUP':
-        return [FateType.SUPERSCRIPT];
+        return [new FateNode(FateType.SUPERSCRIPT)];
+      case 'A':
+        return [new FateNode(FateType.LINK, element.getAttribute('href'))];
       case 'OL':
-        return [FateType.ORDERED_LIST];
+        return [new FateNode(FateType.ORDERED_LIST)];
       case 'UL':
-        return [FateType.UNORDERED_LIST];
+        return [new FateNode(FateType.UNORDERED_LIST)];
       case 'LI':
-        return [FateType.LISTITEM];
+        return [new FateNode(FateType.LISTITEM)];
       case 'DIV':
       case 'P':
-        return [FateType.PARAGRAPH,...this.getAdditonalStyle(element)];
+        return [new FateNode(FateType.PARAGRAPH),...this.getAdditonalStyle(element)];
       case 'BLOCKQUOTE':
         // FIXME: this doesn't work on FF
         if (element.style.marginLeft === '40px') {
-          return [FateType.INDENT];
+          return [new FateNode(FateType.INDENT)];
         }
-        return [FateType.NONE];
+        return [new FateNode(FateType.NONE)];
       // TODO more
       default:
-        return [FateType.NONE];
+        return [new FateNode(FateType.NONE)];
     }
   }
 
-  private serializeType(tree: FateTree): string {
-    switch (tree.type) {
+  private parseValue(element: HTMLElement): any {
+    switch(element.nodeName) {
+      case 'A':
+        return element.getAttribute('href');
+    }
+    return undefined;
+  }
+
+  private serializeType(node: FateNode): string {
+    switch (node.type) {
       case FateType.PARAGRAPH:
-        return '<div>' + this.serialize(tree, true) + '</div>';
+        return '<div>' + this.serialize(node, true) + '</div>';
       case FateType.HEADER1:
-        return '<h1>' + this.serialize(tree, true) + '</h1>';
+        return '<h1>' + this.serialize(node, true) + '</h1>';
       case FateType.HEADER2:
-        return '<h2>' + this.serialize(tree, true) + '</h2>';
+        return '<h2>' + this.serialize(node, true) + '</h2>';
       case FateType.HEADER3:
-        return '<h3>' + this.serialize(tree, true) + '</h3>';
+        return '<h3>' + this.serialize(node, true) + '</h3>';
       case FateType.HEADER4:
-        return '<h4>' + this.serialize(tree, true) + '</h4>';
+        return '<h4>' + this.serialize(node, true) + '</h4>';
       case FateType.HEADER5:
-        return '<h5>' + this.serialize(tree, true) + '</h5>';
+        return '<h5>' + this.serialize(node, true) + '</h5>';
       case FateType.HEADER6:
-        return '<h6>' + this.serialize(tree, true) + '</h6>';
+        return '<h6>' + this.serialize(node, true) + '</h6>';
       case FateType.QUOTE:
-        return '<quote>' + this.serialize(tree) + '</quote>';
+        return '<quote>' + this.serialize(node) + '</quote>';
       case FateType.CODE:
-        return '<code>' + this.serialize(tree) + '</code>';
+        return '<code>' + this.serialize(node) + '</code>';
       case FateType.SIZE:
-        return '<span style="font-size: ' + tree.style + '">' + this.serialize(tree) + '</span>';
+        return '<span style="font-size: ' + node.value + '">' + this.serialize(node) + '</span>';
       case FateType.BOLD:
-        return '<strong>' + this.serialize(tree) + '</strong>';
+        return '<strong>' + this.serialize(node) + '</strong>';
       case FateType.ITALIC:
-        return '<em>' + this.serialize(tree) + '</em>';
+        return '<em>' + this.serialize(node) + '</em>';
       case FateType.UNDERLINE:
-        return '<u>' + this.serialize(tree) + '</u>';
+        return '<u>' + this.serialize(node) + '</u>';
       case FateType.STRIKETHROUGH:
-        return '<strike>' + this.serialize(tree) + '</strike>';
+        return '<strike>' + this.serialize(node) + '</strike>';
       case FateType.SUBSCRIPT:
-        return '<sub>' + this.serialize(tree) + '</sub>';
+        return '<sub>' + this.serialize(node) + '</sub>';
       case FateType.SUPERSCRIPT:
-        return '<sup>' + this.serialize(tree) + '</sup>';
+        return '<sup>' + this.serialize(node) + '</sup>';
+      case FateType.LINK:
+        return '<a href="' + node.value + '">' + this.serialize(node) + '</a>';
       case FateType.ORDERED_LIST:
-        return '<ol>' + this.serialize(tree) + '</ol>';
+        return '<ol>' + this.serialize(node) + '</ol>';
       case FateType.UNORDERED_LIST:
-        return '<ul>' + this.serialize(tree) + '</ul>';
+        return '<ul>' + this.serialize(node) + '</ul>';
       case FateType.LISTITEM:
-        return '<li>' + this.serialize(tree) + '</li>';
+        return '<li>' + this.serialize(node) + '</li>';
       case FateType.ALIGN_LEFT:
-        return '<div style="text-align: left;">' + this.serialize(tree, true) + '</div>';
+        return '<div style="text-align: left;">' + this.serialize(node, true) + '</div>';
       case FateType.ALIGN_CENTER:
-        return '<div style="text-align: center;">' + this.serialize(tree, true) + '</div>';
+        return '<div style="text-align: center;">' + this.serialize(node, true) + '</div>';
       case FateType.ALIGN_RIGHT:
-        return '<div style="text-align: right">' + this.serialize(tree, true) + '</div>';
+        return '<div style="text-align: right">' + this.serialize(node, true) + '</div>';
       case FateType.JUSTIFY:
-        return '<div style="text-align: justify;">' + this.serialize(tree, true) + '</div>';
+        return '<div style="text-align: justify;">' + this.serialize(node, true) + '</div>';
       case FateType.INDENT:
-        return '<blockquote style="margin-left: 40px">' + this.serialize(tree, true) + '</blockquote>';
+        return '<blockquote style="margin-left: 40px">' + this.serialize(node, true) + '</blockquote>';
       case FateType.NONE:
-        return this.serialize(tree);
+        return this.serialize(node);
     }
   };
 
   // Saves a Tree in string representation
-  public serialize (tree: FateTree, fallbackToBr: boolean = false): string {
+  public serialize (node: FateNode, fallbackToBr: boolean = false): string {
     let serialized = '';
-    tree.children.forEach((child) => {
+    node.children.forEach((child) => {
       if (typeof child === 'string') {
         serialized += child;
       } else {
@@ -199,12 +203,4 @@ export class FateHtmlParserService {
     }
     return serialized;
   };
-
-  public detectActions(node) {
-    let actions: Array<string> = [];
-    if (node.parentElement.nodeName === 'B' || node.parentElement.nodeName === 'STRONG') {
-      actions.push('bold');
-    }
-    return actions;
-  }
 }

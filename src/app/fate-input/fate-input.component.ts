@@ -51,6 +51,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   public content: SafeHtml;
   public empty: boolean = true;
   private editTarget: any;
+  private isFocused: boolean = false;
 
   constructor(private el: ElementRef, private controller: FateControllerService, private htmlParser: FateHtmlParserService, private parser: FateParserService, private sanitizer: DomSanitizer) {}
 
@@ -65,16 +66,24 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     }
 
     this.editTarget.addEventListener('click', (event: any) => {
-      // On blur we save the text Selection
+      console.info('click');
+      // On click we save the text Selection
       this.saveSelection();
     });
 
     this.editTarget.addEventListener('focus', (event: any) => {
+      console.info('focus');
       // On focus we restore it
       this.restoreSelection();
+      this.isFocused = true;
+    });
+    this.editTarget.addEventListener('blur', (event: any) => {
+      console.info('blur');
+      this.isFocused = false;
     });
 
     this.editTarget.addEventListener('input', (event: any) => {
+      console.info('input');
       console.debug('value changed:', this.editTarget.innerHTML);
       if (this.editTarget.innerHTML === '') {
         this.editTarget.innerHTML = '<br>';
@@ -120,10 +129,13 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       this.uiSubscription.unsubscribe();
     }
     this.uiSubscription = this.controller.channel(uiId).subscribe((command) => {
+      // if input is not on focus we save current focus:
+      let focus = document.activeElement;
       console.debug('got command ' + command.name + '/' + command.value + ' on channel ' + uiId);
       this.editTarget.focus();
       document.execCommand(command.name, false, command.value);
-      this.saveSelection()
+      this.saveSelection();
+      (focus as any).focus();
     });
   }
 
@@ -148,9 +160,9 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   }
 
   private detectStyle() {
-    let types = this.htmlParser.findParentTypes(this.selectionRange.commonAncestorContainer, this.editTarget);
-    console.info('detected actions: ', types);
-    this.controller.enableActions(this.uiId, types);
+    let nodes = this.htmlParser.findParentNodes(this.selectionRange.commonAncestorContainer, this.editTarget);
+    console.info('detected actions: ', nodes);
+    this.controller.enableActions(this.uiId, nodes);
   }
 
   // implentation of ControlValueAccessor:
