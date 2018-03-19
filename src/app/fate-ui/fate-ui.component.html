@@ -9,9 +9,7 @@
   </ng-container>
   <div class="fate-ui-dropdown" [ngClass]="{visible: dropdownAction}">
     <ng-container [ngSwitch]="dropdownAction">
-      <ng-container *ngSwitchCase="'link'">
-        <input type="text" [ngModel]="dropdownValue" (ngModelChange)="dropdownValueChange($event)" placeholder="http://">
-      </ng-container>
+       <ng-template #dropdown></ng-template>
     </ng-container>
   </div>
 </div>

@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, HostListener } from '@angular/core';
+import { Component, Input, ElementRef, HostListener, ComponentFactoryResolver } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 import { FateUiComponent } from '../fate-ui/fate-ui.component';
@@ -55,8 +55,8 @@ export class FateBootstrapComponent extends FateUiComponent implements ControlVa
     this.uiVisible = true;
   }
 
-  constructor(el: ElementRef, controller: FateControllerService, parser: FateParserService, icon: FateIconService) {
-    super(el, controller, icon, parser);
+  constructor(el: ElementRef, controller: FateControllerService, parser: FateParserService, icon: FateIconService, factoryResolver: ComponentFactoryResolver) {
+    super(el, controller, icon, parser, factoryResolver);
     this.uiId = 'bootstrap-' + (instanceCounter++);
   }
 
