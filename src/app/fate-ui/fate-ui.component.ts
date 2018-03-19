@@ -1,10 +1,11 @@
-import { Component, Input, ElementRef, HostListener, OnChanges, AfterViewInit } from '@angular/core';
+import { Component, Input, ElementRef, HostListener, OnChanges, AfterViewInit, ComponentFactoryResolver, ViewChild, ViewContainerRef, ViewRef } from '@angular/core';
 
 import { Subscription } from 'rxjs/Subscription';
 
 import { FateControllerService } from '../fate-controller.service';
 import { FateParserService } from '../fate-parser.service';
 import { FateIconService } from '../fate-icon.service';
+import { FateDropdown } from '../fate-dropdown.interface';
 
 @Component({
   selector: 'fate-ui',
@@ -53,10 +54,11 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
   public enabled: any = {};
   public dropdownAction: boolean | string = false;
   public dropdownValue: string;
+  private dropdownComponent: ViewRef;
 
   private inputSubscription: Subscription;
 
-  constructor(private el: ElementRef, public controller: FateControllerService, public icon: FateIconService, private parser: FateParserService) { }
+  constructor(private el: ElementRef, public controller: FateControllerService, public icon: FateIconService, private parser: FateParserService, private factoryResolver: ComponentFactoryResolver) { }
 
   @HostListener('mousedown', ['$event'])
   public mouseDown(event) {
@@ -65,10 +67,15 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  @ViewChild('dropdown', {
+    read: ViewContainerRef
+  })
+  viewContainerRef: ViewContainerRef
+
   public do(event, action) {
     event.preventDefault();
     event.stopPropagation();
-    if (this.controller.getAction(action).hasValue) {
+    if (this.controller.getAction(action).dropdown) {
       if (action === this.dropdownAction) {
         this.dropdownAction = false;
       } else {
@@ -81,7 +88,8 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
         // Enable the dropdown
         this.dropdownAction = action;
         this.dropdownValue = this.enabled[action];
-        console.debug('action has value', button, dropdown);
+        console.debug('action has value', button, dropdown, this.dropdownValue);
+        this.initDropdown(this.controller.getAction(action).dropdown, this.dropdownValue);
 
         // Postion the dropdown
         setTimeout(() => {
@@ -102,9 +110,22 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  public dropdownValueChange(value) {
-    this.dropdownValue = value;
-    this.controller.do(this.uiId, this.dropdownAction, value);
+  private initDropdown(actionComponent, value) {
+    if (this.dropdownComponent) {
+      this.dropdownComponent.destroy();
+    }
+    const factory = this.factoryResolver.resolveComponentFactory(actionComponent);
+    const component: any = factory.create(this.viewContainerRef.parentInjector);
+    if (component.instance.valueChange) {
+      component.instance.value = value;
+      component.instance.valueChange.subscribe((value) => {
+        this.dropdownValue = value;
+        this.controller.do(this.uiId, this.dropdownAction, value);
+      });
+      this.dropdownComponent = this.viewContainerRef.insert(component.hostView);
+    } else {
+      throw new Error('The component used as a dropdown doesn\'t contain a valueChange emmiter!');
+    }
   }
 
   public ngOnChanges(changes) {

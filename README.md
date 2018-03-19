@@ -70,3 +70,44 @@ This the number of row of text the input should show by default. This mimics the
 This is the placeholder text that will show when the input is empty and nothing is selected.
 #### ngModel
 You can use `ngModel` like you would on any other input element and it will behave the same. The value that will be read and exported is dependent of the parser you've decided to inject, by default it's HTML.
+
+# Customizing Fate
+
+Fate has been written to make it as easy as possible to extend and customize. This is done by subclassing one of it's component of service and injecting it to replace the original.
+
+## Custom Icons
+
+Creating a custom set of icons for you app is the simplest form of customization:
+
+### First create a implementation of the `FateIconService` service:
+```typescript
+import { Injectable } from '@angular/core';
+
+import { FateIconService } from './fate-icon.service';
+
+@Injectable()
+export class MyIconService extends FateIconService {
+}
+```
+
+### Then define how you want the icon to be rendered in a `iconMapping` object:
+```typescript
+export class MyIconService extends FateIconService {
+  protected iconMapping: any = {
+    'bold' : '<span>B<span>',
+    'italic' : '<span>I<span>',
+    // ...
+  };
+}
+```
+
+### Finally instruct you app to use your service instead of the standard one:
+```typescript
+@NgModule({
+  // ...
+  providers: [
+    { provide: FateIconService, useClass: MyIconService }
+  ],
+  // ...
+})
+```

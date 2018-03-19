@@ -1,4 +1,4 @@
-import { Component, Input, HostBinding, HostListener, Optional, Self, ElementRef, OnDestroy } from '@angular/core';
+import { Component, Input, HostBinding, HostListener, Optional, Self, ElementRef, OnDestroy, ComponentFactoryResolver } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 
@@ -125,8 +125,8 @@ export class FateMaterialComponent extends FateUiComponent implements  ControlVa
 
   private changed = new Array<(value: string) => void>();
 
-  constructor(controller: FateControllerService, parser: FateParserService, icon: FateIconService, el: ElementRef, @Optional() @Self() public ngControl: NgControl) {
-    super(el, controller, icon, parser);
+  constructor(controller: FateControllerService, parser: FateParserService, icon: FateIconService, el: ElementRef, @Optional() @Self() public ngControl: NgControl, factoryResolver: ComponentFactoryResolver) {
+    super(el, controller, icon, parser, factoryResolver);
     this.uiId = 'material-' + (instanceCounter++);
     // Setting the value accessor directly (instead of using
     // the providers) to avoid running into a circular import.

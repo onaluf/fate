@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 
 import { FateType } from './fate-type.enum';
+import { FateLinkDropdownComponent } from './fate-link-dropdown/fate-link-dropdown.component';
 
 interface Command {
   name: string;
@@ -157,9 +158,7 @@ export class FateControllerService {
       undo: 'unlink',
       name: 'Link',
       detect: FateType.LINK,
-      hasValue: {
-        type: 'string'
-      }
+      dropdown: FateLinkDropdownComponent
     }
   };
   public getAction(actionName): boolean | any {
@@ -204,7 +203,7 @@ export class FateControllerService {
 
 
   public do(channel, action, value?) {
-    if (this.actionMapping[action].hasValue && !value) {
+    if (this.actionMapping[action].dropdown && !value) {
       if (this.actionMapping[action].undo) {
         this.commands[channel].next({name: this.actionMapping[action].undo, value: this.actionMapping[action].value || value});
       } else {

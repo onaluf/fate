@@ -7,6 +7,7 @@ import { FateUiComponent } from './fate-ui/fate-ui.component';
 import { FateInputComponent } from './fate-input/fate-input.component';
 import { FateBootstrapComponent } from './fate-bootstrap/fate-bootstrap.component';
 import { FateMaterialComponent } from './fate-material/fate-material.component';
+import { FateLinkDropdownComponent } from './fate-link-dropdown/fate-link-dropdown.component';
 
 import { FateControllerService } from './fate-controller.service';
 import { FateHtmlParserService } from './fate-html-parser.service';
@@ -16,8 +17,10 @@ import { FateParserService } from './fate-parser.service';
 
 export { FateParser } from './fate-parser.interface';
 export { FateIcon } from './fate-icon.interface';
+export { FateDropdown } from './fate-dropdown.interface';
 export { FateUiComponent } from './fate-ui/fate-ui.component';
 export { FateInputComponent } from './fate-input/fate-input.component';
+export { FateLinkDropdownComponent } from './fate-link-dropdown/fate-link-dropdown.component';
 export { FateIconService } from './fate-icon.service';
 export { FateMaterialIconService } from './fate-material-icon.service';
 export { FateParserService } from './fate-parser.service';
@@ -30,6 +33,7 @@ export { FateType } from './fate-type.enum';
     FateUiComponent,
     FateBootstrapComponent,
     FateMaterialComponent,
+    FateLinkDropdownComponent,
   ],
   imports: [
     CommonModule,
@@ -41,6 +45,10 @@ export { FateType } from './fate-type.enum';
     FateInputComponent,
     FateBootstrapComponent,
     FateMaterialComponent,
+    FateLinkDropdownComponent
+  ],
+  entryComponents: [
+    FateLinkDropdownComponent
   ],
   providers: [
     FateControllerService,
