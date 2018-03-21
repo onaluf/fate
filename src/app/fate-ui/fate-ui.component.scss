@@ -30,6 +30,7 @@ $font-size: 14px;
   vertical-align: middle;
   cursor: pointer;
   font-size: $font-size;
+  box-sizing: border-box;
 
   transition: background 300ms;
   border-radius: 3px;
@@ -52,6 +53,7 @@ $font-size: 14px;
   z-index: 1;
   font-size: 14px;
   user-select: all;
+  box-sizing: border-box;
 
   border-radius: 3px;
   background-color: #E5E5E5;
