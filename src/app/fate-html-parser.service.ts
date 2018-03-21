@@ -17,7 +17,7 @@ export class FateHtmlParserService {
   };
 
   public parseElement(element: HTMLElement): FateNode {
-    let nodes = this.parseType(element);;
+    let nodes = this.parseType(element);
     let currentNode = nodes[0];
     for (let i = 1; i < nodes.length; i++) {
       currentNode.children.push(nodes[i]);
@@ -34,7 +34,7 @@ export class FateHtmlParserService {
         // ignore
       }
     }
-    return currentNode;
+    return nodes[0];
   }
 
   public findParentNodes(node: Node, until: Node): Array<FateNode> {
