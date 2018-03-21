@@ -73,11 +73,11 @@ You can use `ngModel` like you would on any other input element and it will beha
 
 # Customizing Fate
 
-Fate has been written to make it as easy as possible to extend and customize. This is done by subclassing one of it's component of service and injecting it to replace the original.
+Fate has been written to make it as easy as possible to extend and customize. This is done by subclassing one of its component or service and injecting it to replace the original.
 
 ## Custom Icons
 
-Creating a custom set of icons for you app is the simplest form of customization:
+Creating a custom set of icons for your app is the simplest form of customization:
 
 ### First create a implementation of the `FateIconService` service:
 ```typescript
@@ -101,7 +101,7 @@ export class MyIconService extends FateIconService {
 }
 ```
 
-### Finally instruct you app to use your service instead of the standard one:
+### Finally instruct your app to use your service instead of the standard one:
 ```typescript
 @NgModule({
   // ...
