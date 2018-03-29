@@ -49,25 +49,29 @@ This allow you to choose which `fate-input` is targeted by this UI. For example 
 <fate-input uiId="foo" [(ngModel)]="someHtml"></fate-input>
 ```
 #### buttons
-This is an array of strings that define which buttons should be shown in which order, you can add `"separator"` at any position to add a separator between two buttons. Under the hood it's just using the two previously described components and styling them. You don't need to specify any `uiId` because they are generated automatically.
+This is an array of strings that define which buttons should be shown in which order, you can add `"separator"` at any position to add a separator between two buttons.
 
 ## fate-bootstrap
-This is a all-in-one component that includes a UI and an input. It's mean to be a drop-in replacement to textarea in Bootstrap forms
+This is a all-in-one component that includes a UI and an input. It's mean to be a drop-in replacement to textarea in Bootstrap forms. Under the hood it's just using the two previously described components and styling them. You don't need to specify any `uiId` because they are generated automatically.
 ### Properties
 #### row
 This the number of row of text the input should show by default. This mimics the behaviour of the same property on textarea. Note that by default `fate-input` is resizable vertically so this only specifies the default height.
 #### placeholder
 This is the placeholder text that will show when the input is empty and nothing is selected.
+#### buttons
+This is an array of strings that define which buttons should be shown in which order, you can add `"separator"` at any position to add a separator between two buttons.
 #### ngModel
 You can use `ngModel` like you would on any other input element and it will behave the same. The value that will be read and exported is dependent of the parser you've decided to inject, by default it's HTML.
 
 ## fate-material
-This is a all-in-one component that includes a UI and an input. It's mean to be a drop-in replacement to textarea in Material forms
+This is a all-in-one component that includes a UI and an input. It's mean to be a drop-in replacement to textarea in Material forms. Under the hood it's just using the two previously described components and styling them. You don't need to specify any `uiId` because they are generated automatically.
 ### Properties
 #### row
 This the number of row of text the input should show by default. This mimics the behaviour of the same property on textarea. Note that by default `fate-input` is resizable vertically so this only specifies the default height.
 #### placeholder
 This is the placeholder text that will show when the input is empty and nothing is selected.
+#### buttons
+This is an array of strings that define which buttons should be shown in which order, you can add `"separator"` at any position to add a separator between two buttons.
 #### ngModel
 You can use `ngModel` like you would on any other input element and it will behave the same. The value that will be read and exported is dependent of the parser you've decided to inject, by default it's HTML.
 
@@ -83,7 +87,7 @@ Creating a custom set of icons for your app is the simplest form of customizatio
 ```typescript
 import { Injectable } from '@angular/core';
 
-import { FateIconService } from './fate-icon.service';
+import { FateIconService } from 'fate-editor';
 
 @Injectable()
 export class MyIconService extends FateIconService {
