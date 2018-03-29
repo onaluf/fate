@@ -5,7 +5,7 @@ import { Subject } from 'rxjs/Subject';
 import { FateType } from './fate-type.enum';
 import { FateLinkDropdownComponent } from './fate-link-dropdown/fate-link-dropdown.component';
 
-interface Command {
+export interface FateCommand {
   name: string;
   value : any;
 }
@@ -165,7 +165,7 @@ export class FateControllerService {
   }
 
   protected commandsPipe = {
-    default: new Subject<Command>()
+    default: new Subject<FateCommand>()
   };
 
   protected enabledActions = {
@@ -176,7 +176,7 @@ export class FateControllerService {
 
   public channel(channelId) {
     if (!this.commandsPipe[channelId]) {
-      this.commandsPipe[channelId] = new Subject<Command>();
+      this.commandsPipe[channelId] = new Subject<FateCommand>();
     }
     return this.commandsPipe[channelId];
   }
