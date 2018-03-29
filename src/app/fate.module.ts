@@ -24,6 +24,8 @@ export { FateLinkDropdownComponent } from './fate-link-dropdown/fate-link-dropdo
 export { FateIconService } from './fate-icon.service';
 export { FateMaterialIconService } from './fate-material-icon.service';
 export { FateParserService } from './fate-parser.service';
+export { FateControllerService } from './fate-controller.service';
+export { FateHtmlParserService } from './fate-html-parser.service';
 export { FateNode } from './fate-node';
 export { FateType } from './fate-type.enum';
 
