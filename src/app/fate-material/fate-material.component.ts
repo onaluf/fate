@@ -27,6 +27,9 @@ export class FateMaterialComponent extends FateUiComponent implements  ControlVa
   row: number;
 
   @Input()
+  public buttons: Array<string>;
+
+  @Input()
   public get value(): string {
     return this.passthrough;
   }
