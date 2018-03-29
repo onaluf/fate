@@ -164,7 +164,7 @@ export class FateControllerService {
     return this.actionMapping[actionName] || false;
   }
 
-  protected commands = {
+  protected commandsPipe = {
     default: new Subject<Command>()
   };
 
@@ -175,10 +175,10 @@ export class FateControllerService {
   constructor() { }
 
   public channel(channelId) {
-    if (!this.commands[channelId]) {
-      this.commands[channelId] = new Subject<Command>();
+    if (!this.commandsPipe[channelId]) {
+      this.commandsPipe[channelId] = new Subject<Command>();
     }
-    return this.commands[channelId];
+    return this.commandsPipe[channelId];
   }
 
   public enabled(channelId) {
@@ -204,12 +204,12 @@ export class FateControllerService {
   public do(channel, action, value?) {
     if (this.actionMapping[action].dropdown && !value) {
       if (this.actionMapping[action].undo) {
-        this.commands[channel].next({name: this.actionMapping[action].undo, value: this.actionMapping[action].value || value});
+        this.commandsPipe[channel].next({name: this.actionMapping[action].undo, value: this.actionMapping[action].value || value});
       } else {
         throw new Error('Action "' + action + '"doesn\'t have a undo command');
       }
     } else {
-      this.commands[channel].next({name: this.actionMapping[action].command, value: this.actionMapping[action].value || value});
+      this.commandsPipe[channel].next({name: this.actionMapping[action].command, value: this.actionMapping[action].value || value});
     }
   }
 
