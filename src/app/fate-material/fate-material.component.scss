@@ -49,9 +49,11 @@
     }
     /deep/ .fate-ui-separator {
       margin-right: -4px;
-      height: 34px;
+      margin-top: 2px;
+      margin-bottom: 2px;
+      margin-left: -1px;
+      height: 36px;
       border-radius: 0;
-      margin-bottom: 3px;
       width: 1px;
       vertical-align: middle;
       background-color: #DFDFDF;

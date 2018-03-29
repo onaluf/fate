@@ -101,7 +101,6 @@ export class FateControllerService {
       value: 'DIV',
       name: 'Normal',
       label: 'p',
-      detect: FateType.PARAGRAPH
     },
     'indent' : {
       command: 'indent',
