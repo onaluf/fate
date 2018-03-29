@@ -47,7 +47,7 @@ export class FateHtmlParserService {
     return nodes;
   }
 
-  private getAdditonalStyle(element: HTMLElement): Array<FateNode> {
+  protected getAdditonalStyle(element: HTMLElement): Array<FateNode> {
     let style = element.style;
     switch (style.textAlign) {
       case 'left':
@@ -72,7 +72,7 @@ export class FateHtmlParserService {
     return [];
   }
 
-  private parseType(element: HTMLElement): Array<FateNode> {
+  protected parseType(element: HTMLElement): Array<FateNode> {
     switch(element.nodeName) {
       case 'H1':
         return [new FateNode(FateType.HEADER1),...this.getAdditonalStyle(element)];
@@ -123,7 +123,7 @@ export class FateHtmlParserService {
     }
   }
 
-  private parseValue(element: HTMLElement): any {
+  protected parseValue(element: HTMLElement): any {
     switch(element.nodeName) {
       case 'A':
         return element.getAttribute('href');
@@ -131,7 +131,7 @@ export class FateHtmlParserService {
     return undefined;
   }
 
-  private serializeType(node: FateNode): string {
+  protected serializeType(node: FateNode): string {
     switch (node.type) {
       case FateType.PARAGRAPH:
         return '<div>' + this.serialize(node, true) + '</div>';
