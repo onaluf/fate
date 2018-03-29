@@ -164,11 +164,11 @@ export class FateControllerService {
     return this.actionMapping[actionName] || false;
   }
 
-  private commands = {
+  protected commands = {
     default: new Subject<Command>()
   };
 
-  private enabledActions = {
+  protected enabledActions = {
     default: new Subject<any>()
   };
 
