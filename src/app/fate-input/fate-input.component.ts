@@ -71,6 +71,12 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       this.saveSelection();
     });
 
+    this.editTarget.addEventListener('keypress', (event: any) => {
+      console.debug('keypressed');
+      // On click we save the text Selection
+      this.saveSelection();
+    });
+
     this.editTarget.addEventListener('focus', (event: any) => {
       console.debug('focus');
       // On focus we restore it
