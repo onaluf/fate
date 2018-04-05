@@ -8,8 +8,6 @@
     <div *ngIf="button === 'separator'" class="fate-ui-separator"></div>
   </ng-container>
   <div class="fate-ui-dropdown" [ngClass]="{visible: dropdownAction}">
-    <ng-container [ngSwitch]="dropdownAction">
-       <ng-template #dropdown></ng-template>
-    </ng-container>
+    <ng-template #dropdown></ng-template>
   </div>
 </div>
