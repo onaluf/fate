@@ -86,7 +86,7 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
         let dropdown =  this.el.nativeElement.querySelector('.fate-ui-dropdown');
 
         // Enable the dropdown
-        this.dropdownAction = action;
+
         this.dropdownValue = this.enabled[action];
         console.debug('action has value', button, dropdown, this.dropdownValue);
         this.initDropdown(this.controller.getAction(action).dropdown, this.dropdownValue);
@@ -96,18 +96,38 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
           let buttonSize = button.getBoundingClientRect();
           let dropdownSize =  dropdown.getBoundingClientRect();
           let leftPosition = button.offsetLeft + (buttonSize.width / 2) - (dropdownSize.width / 2);
-          if (leftPosition < 3) {
-            leftPosition = 3;
+          // make sure the dropdown is not bleeding out of the viewport
+          if (buttonSize.left + window.pageXOffset + (buttonSize.width / 2) - (dropdownSize.width / 2) < 3) {
+            leftPosition = - buttonSize.left - window.pageXOffset + button.offsetLeft + 3;
+          } else if (buttonSize.left + window.pageXOffset + (buttonSize.width / 2) + (dropdownSize.width / 2) > window.innerWidth - 3) {
+            leftPosition = window.innerWidth - buttonSize.left - window.pageXOffset + button.offsetLeft - dropdownSize.width - 3;
           }
           let topPosition = button.offsetTop + buttonSize.height - 3;
           dropdown.style.left = leftPosition + 'px';
           dropdown.style.top = topPosition + 'px';
+          // make the dropdown visible
+          this.dropdownAction = action;
         }, 0);
       }
     } else {
       this.dropdownAction = false;
       this.controller.do(this.uiId, action);
     }
+  }
+
+  private getOffset(element) {
+    let top = 0;
+    let left = 0;
+    do {
+        top += element.offsetTop  || 0;
+        left += element.offsetLeft || 0;
+        element = element.offsetParent;
+    } while(element);
+
+    return {
+        top: top,
+        left: left
+    };
   }
 
   private initDropdown(actionComponent, value) {
