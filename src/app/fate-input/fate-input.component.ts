@@ -88,9 +88,41 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       this.isFocused = false;
     });
 
+    this.editTarget.addEventListener('keydown', (event: any) => {
+      console.info('keydown?', event);
+      // This is needed because, if the current selection is part
+      // of a non-editable child of the input, the default delete won't
+      // work.
+      // This case can happen if there is a cutom element that
+      // was inserted by some custom controller.
+      //
+      // Some constraints for a custom block to work on top of contenteditable=false:
+      // -moz-user-select: none;
+      // -webkit-user-modify: read-only;
+      //
+      // Note: It may make sense to delete the selection for normal text
+      // input too but for now we only do it on deletion.
+      if (event.key === "Backspace" || event.key === "Delete") {
+        let node = this.selectionRange.commonAncestorContainer;
+        console.info('Deletion', node);
+        if (node instanceof HTMLElement && !(node as HTMLElement).isContentEditable) {
+          // this is the case on firefox
+          console.debug('deleting inside un-editable block detected');
+          event.preventDefault();
+          this.selectionRange.selectNode(node);
+          this.selectionRange.deleteContents();
+        } else if (node.nodeName === '#text' && !node.parentElement.isContentEditable) {
+          // this is the case on webkit
+          console.debug('deleting inside un-editable block detected');
+          event.preventDefault();
+          this.selectionRange.selectNode(node.parentElement);
+          this.selectionRange.deleteContents();
+        }
+      }
+    });
+
     this.editTarget.addEventListener('input', (event: any) => {
-      console.debug('input');
-      console.debug('value changed:', this.editTarget.innerHTML);
+      console.debug('value changed');
       if (this.editTarget.innerHTML === '') {
         this.editTarget.innerHTML = '<br>';
         this.empty = true;
