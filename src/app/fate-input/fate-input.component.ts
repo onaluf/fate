@@ -111,12 +111,16 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
           event.preventDefault();
           this.selectionRange.selectNode(node);
           this.selectionRange.deleteContents();
+          let tree = this.htmlParser.parseElement(this.editTarget);
+          this.changed.forEach(f => f(this.parser.serialize(tree)));
         } else if (node.nodeName === '#text' && !node.parentElement.isContentEditable) {
           // this is the case on webkit
           console.debug('deleting inside un-editable block detected');
           event.preventDefault();
           this.selectionRange.selectNode(node.parentElement);
           this.selectionRange.deleteContents();
+          let tree = this.htmlParser.parseElement(this.editTarget);
+          this.changed.forEach(f => f(this.parser.serialize(tree)));
         }
       }
     });
