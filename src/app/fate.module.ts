@@ -13,6 +13,7 @@ import { FateControllerService } from './fate-controller.service';
 import { FateHtmlParserService } from './fate-html-parser.service';
 import { FateIconService } from './fate-icon.service';
 import { FateMaterialIconService } from './fate-material-icon.service';
+import { FateFontawsomeLegacyIconService } from './fate-fontawsome-legacy-icon.service';
 import { FateParserService } from './fate-parser.service';
 
 export { FateParser } from './fate-parser.interface';
@@ -23,6 +24,7 @@ export { FateInputComponent } from './fate-input/fate-input.component';
 export { FateLinkDropdownComponent } from './fate-link-dropdown/fate-link-dropdown.component';
 export { FateIconService } from './fate-icon.service';
 export { FateMaterialIconService } from './fate-material-icon.service';
+export { FateFontawsomeLegacyIconService } from './fate-fontawsome-legacy-icon.service';
 export { FateParserService } from './fate-parser.service';
 export { FateControllerService, FateCommand } from './fate-controller.service';
 export { FateHtmlParserService } from './fate-html-parser.service';
@@ -57,6 +59,7 @@ export { FateType } from './fate-type.enum';
     FateHtmlParserService,
     FateIconService,
     FateMaterialIconService,
+    FateFontawsomeLegacyIconService,
     FateParserService
   ]
 })
