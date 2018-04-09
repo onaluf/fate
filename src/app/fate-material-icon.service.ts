@@ -10,6 +10,8 @@ export class FateMaterialIconService extends FateIconService {
     'italic' : '<i class="material-icons">format_italic</i>',
     'underline' : '<i class="material-icons">format_underlined</i>',
     'strike' : '<i class="material-icons">format_strikethrough</i>',
+    'subscript' :  'x<sub>2</sub>',
+    'superscript' : 'x<sup>2</sup>',
     'indent' : '<i class="material-icons">format_indent_increase</i>',
     'outdent' : '<i class="material-icons">format_indent_decrease</i>',
     'ordered' : '<i class="material-icons">format_list_numbered</i>',
