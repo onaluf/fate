@@ -24,6 +24,7 @@ import { FateParserService } from '../fate-parser.service';
       overflow: auto;
       background: #FFF;
       color: #000;
+      overflow: visible;
     }
     :host div.fate-edit-target.empty:not(:focus):before {
       content:attr(title);
@@ -138,7 +139,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       let tree = this.htmlParser.parseElement(this.editTarget);
       this.changed.forEach(f => f(this.parser.serialize(tree)));
     });
-    let style:any = window.getComputedStyle(this.editTarget);
+    let style: any = window.getComputedStyle(this.editTarget);
     this.editTarget.style.minHeight = this.getHeight(2);
   }
 
@@ -176,8 +177,19 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       // if input is not on focus we save current focus:
       let focus = document.activeElement;
       console.debug('got command ' + command.name + '/' + command.value + ' on channel ' + uiId);
+
       this.editTarget.focus();
-      document.execCommand(command.name, false, command.value);
+      if (command.name === 'insertHTML') {
+        // insertHtml seems quite broken so we do it ourseleves
+        this.selectionRange.insertNode(document.createRange().createContextualFragment(command.value));
+        // move cusor to the end of the newly inserted element
+        this.selectionRange.collapse(false);
+        // Force the update of the model
+        let tree = this.htmlParser.parseElement(this.editTarget);
+        this.changed.forEach(f => f(this.parser.serialize(tree)));
+      } else {
+        document.execCommand(command.name, false, command.value);
+      }
       this.saveSelection();
       (focus as any).focus();
     });
