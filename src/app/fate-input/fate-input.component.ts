@@ -72,7 +72,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       this.saveSelection();
     });
 
-    this.editTarget.addEventListener('keypress', (event: any) => {
+    this.editTarget.addEventListener('keyup', (event: any) => {
       console.debug('keypressed');
       // On click we save the text Selection
       this.saveSelection();
@@ -179,7 +179,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       console.debug('got command ' + command.name + '/' + command.value + ' on channel ' + uiId);
 
       this.editTarget.focus();
-      if (command.name === 'insertHTML') {
+      if (command.name === 'insertHTML' && this.selectionRange) {
         // insertHtml seems quite broken so we do it ourseleves
         this.selectionRange.insertNode(document.createRange().createContextualFragment(command.value));
         // move cusor to the end of the newly inserted element
