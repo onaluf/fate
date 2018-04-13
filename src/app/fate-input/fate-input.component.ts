@@ -72,7 +72,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       this.saveSelection();
     });
 
-    this.editTarget.addEventListener('keypress', (event: any) => {
+    this.editTarget.addEventListener('keyup', (event: any) => {
       console.debug('keypressed');
       // On click we save the text Selection
       this.saveSelection();
@@ -112,6 +112,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
           event.preventDefault();
           this.selectionRange.selectNode(node);
           this.selectionRange.deleteContents();
+          this.checkEmpty();
           let tree = this.htmlParser.parseElement(this.editTarget);
           this.changed.forEach(f => f(this.parser.serialize(tree)));
         } else if (node.nodeName === '#text' && !node.parentElement.isContentEditable) {
@@ -120,6 +121,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
           event.preventDefault();
           this.selectionRange.selectNode(node.parentElement);
           this.selectionRange.deleteContents();
+          this.checkEmpty();
           let tree = this.htmlParser.parseElement(this.editTarget);
           this.changed.forEach(f => f(this.parser.serialize(tree)));
         }
@@ -128,14 +130,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
 
     this.editTarget.addEventListener('input', (event: any) => {
       console.debug('value changed');
-      if (this.editTarget.innerHTML === '') {
-        this.editTarget.innerHTML = '<br>';
-        this.empty = true;
-      } else if (this.editTarget.innerHTML === '<br>') {
-        this.empty = true;
-      } else {
-        this.empty = false;
-      }
+      this.checkEmpty();
       let tree = this.htmlParser.parseElement(this.editTarget);
       this.changed.forEach(f => f(this.parser.serialize(tree)));
     });
@@ -156,6 +151,17 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
 
   private computeHeight() {
     this.editTarget.style.height = this.getHeight(this.row);
+  }
+
+  private checkEmpty() {
+    if (this.editTarget.innerHTML === '') {
+      this.editTarget.innerHTML = '<br>';
+      this.empty = true;
+    } else if (this.editTarget.innerHTML === '<br>') {
+      this.empty = true;
+    } else {
+      this.empty = false;
+    }
   }
 
   private getHeight(rowCount) {
@@ -179,12 +185,13 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       console.debug('got command ' + command.name + '/' + command.value + ' on channel ' + uiId);
 
       this.editTarget.focus();
-      if (command.name === 'insertHTML') {
+      if (command.name === 'insertHTML' && this.selectionRange) {
         // insertHtml seems quite broken so we do it ourseleves
         this.selectionRange.insertNode(document.createRange().createContextualFragment(command.value));
         // move cusor to the end of the newly inserted element
         this.selectionRange.collapse(false);
         // Force the update of the model
+        this.checkEmpty();
         let tree = this.htmlParser.parseElement(this.editTarget);
         this.changed.forEach(f => f(this.parser.serialize(tree)));
       } else {
