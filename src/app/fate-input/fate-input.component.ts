@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, OnInit, OnChanges, AfterViewInit } from '@angular/core';
+import { Component, Input, ElementRef, OnInit, OnChanges, AfterViewInit, OnDestroy } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
@@ -35,7 +35,7 @@ import { FateParserService } from '../fate-parser.service';
     {provide: NG_VALUE_ACCESSOR, useExisting: FateInputComponent, multi: true}
   ],
 })
-export class FateInputComponent implements ControlValueAccessor, OnChanges, OnInit, AfterViewInit {
+export class FateInputComponent implements ControlValueAccessor, OnChanges, OnInit, AfterViewInit, OnDestroy {
 
   @Input()
   public uiId: string = 'default';
@@ -149,6 +149,12 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     }
   }
 
+  public ngOnDestroy() {
+    if (this.uiSubscription) {
+      this.uiSubscription.unsubscribe();
+    }
+  }
+
   private computeHeight() {
     this.editTarget.style.height = this.getHeight(this.row);
   }
@@ -185,6 +191,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       console.debug('got command ' + command.name + '/' + command.value + ' on channel ' + uiId);
 
       this.editTarget.focus();
+      this.restoreSelection();
       if (command.name === 'insertHTML' && this.selectionRange) {
         // insertHtml seems quite broken so we do it ourseleves
         this.selectionRange.insertNode(document.createRange().createContextualFragment(command.value));
