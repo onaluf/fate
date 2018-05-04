@@ -90,7 +90,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     });
 
     this.editTarget.addEventListener('keydown', (event: any) => {
-      console.info('keydown?', event);
+      console.debug('keydown', event);
       // This is needed because, if the current selection is part
       // of a non-editable child of the input, the default delete won't
       // work.
@@ -105,7 +105,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       // input too but for now we only do it on deletion.
       if (event.key === "Backspace" || event.key === "Delete") {
         let node = this.selectionRange.commonAncestorContainer;
-        console.info('Deletion', node);
+        console.debug('Deletion', node);
         if (node instanceof HTMLElement && !(node as HTMLElement).isContentEditable) {
           // this is the case on firefox
           console.debug('deleting inside un-editable block detected');
