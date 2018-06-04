@@ -1,6 +1,6 @@
 import { Component, Input, ElementRef, HostListener, OnChanges, AfterViewInit, ComponentFactoryResolver, ViewChild, ViewContainerRef, ViewRef } from '@angular/core';
 
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { FateControllerService } from '../fate-controller.service';
 import { FateParserService } from '../fate-parser.service';

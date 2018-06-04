@@ -2,7 +2,7 @@ import { Component, Input, ElementRef, OnInit, OnChanges, AfterViewInit, OnDestr
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { FateControllerService } from '../fate-controller.service';
 import { FateHtmlParserService } from '../fate-html-parser.service';
