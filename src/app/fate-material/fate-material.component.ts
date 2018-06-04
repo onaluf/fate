@@ -8,7 +8,7 @@ import { FateParserService } from '../fate-parser.service';
 import { FateIconService } from '../fate-icon.service';
 import { FateMaterialIconService } from '../fate-material-icon.service';
 
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 let instanceCounter = 0;
 

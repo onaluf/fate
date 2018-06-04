@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 import { FateType } from './fate-type.enum';
 import { FateLinkDropdownComponent } from './fate-link-dropdown/fate-link-dropdown.component';
