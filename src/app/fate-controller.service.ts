@@ -82,7 +82,7 @@ export class FateControllerService {
     },
     'heading5' : {
       command: 'formatBlock',
-      _value: 'H5',
+      value: 'H5',
       option: 5,
       name: '5th Header',
       label: 'h5',
