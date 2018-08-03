@@ -110,7 +110,7 @@ export class FateHtmlParserService {
         return [new FateNode(FateType.LISTITEM)];
       case 'DIV':
       case 'P':
-        return [new FateNode(FateType.PARAGRAPH),...this.getAdditonalStyle(element)];
+        return [new FateNode(FateType.NONE),...this.getAdditonalStyle(element)];
       case 'BLOCKQUOTE':
         // FIXME: this doesn't work on FF
         if (element.style.marginLeft === '40px') {
