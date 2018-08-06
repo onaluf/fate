@@ -75,17 +75,17 @@ export class FateHtmlParserService {
   protected parseType(element: HTMLElement): Array<FateNode> {
     switch(element.nodeName) {
       case 'H1':
-        return [new FateNode(FateType.HEADER1),...this.getAdditonalStyle(element)];
+        return [new FateNode(FateType.HEADER1), ...this.getAdditonalStyle(element)];
       case 'H2':
-        return [new FateNode(FateType.HEADER2),...this.getAdditonalStyle(element)];
+        return [new FateNode(FateType.HEADER2), ...this.getAdditonalStyle(element)];
       case 'H3':
-        return [new FateNode(FateType.HEADER3),...this.getAdditonalStyle(element)];
+        return [new FateNode(FateType.HEADER3), ...this.getAdditonalStyle(element)];
       case 'H4':
         return [new FateNode(FateType.HEADER4),...this.getAdditonalStyle(element)];
       case 'H5':
-        return [new FateNode(FateType.HEADER5),...this.getAdditonalStyle(element)];
+        return [new FateNode(FateType.HEADER5), ...this.getAdditonalStyle(element)];
       case 'H6':
-        return [new FateNode(FateType.HEADER6),...this.getAdditonalStyle(element)];
+        return [new FateNode(FateType.HEADER6), ...this.getAdditonalStyle(element)];
       case 'B':
       case 'STRONG':
         return [new FateNode(FateType.BOLD)];
@@ -110,14 +110,17 @@ export class FateHtmlParserService {
         return [new FateNode(FateType.LISTITEM)];
       case 'DIV':
       case 'P':
-        return [new FateNode(FateType.NONE),...this.getAdditonalStyle(element)];
+        const styles = this.getAdditonalStyle(element);
+        if (styles.length > 0) {
+          return [new FateNode(FateType.NONE), ...styles];
+        }
+        return [new FateNode(FateType.PARAGRAPH)];
       case 'BLOCKQUOTE':
         // FIXME: this doesn't work on FF
         if (element.style.marginLeft === '40px') {
           return [new FateNode(FateType.INDENT)];
         }
         return [new FateNode(FateType.NONE)];
-      // TODO more
       default:
         return [new FateNode(FateType.NONE)];
     }
