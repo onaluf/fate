@@ -7,7 +7,6 @@
     "angular",
     "core-js",
     "rxjs",
-    "moment",
     "zone.js"
   ]
 }
