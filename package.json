@@ -7,7 +7,7 @@
   "author": "Selim Arsever <selim@arsever.ch> (http://selim.arsever.ch/)",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --base-href '/fate/'",
+    "start": "ng serve --base-href /fate/",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -31,7 +31,6 @@
     "@angular/platform-browser-dynamic": "^6.0.3",
     "@angular/router": "^6.0.3",
     "core-js": "^2.4.1",
-    "moment": "^2.19.3",
     "rxjs": "^6.2.0",
     "zone.js": "^0.8.26"
   },
