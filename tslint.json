@@ -24,20 +24,17 @@
     "interface-over-type-literal": true,
     "label-position": true,
     "max-line-length": [
-      true,
-      140
+      false
     ],
     "member-access": false,
     "member-ordering": [
       true,
-      "static-before-instance",
-      "variables-before-functions"
+      "static-before-instance"
     ],
     "no-arg": true,
     "no-bitwise": true,
     "no-console": [
       true,
-      "debug",
       "info",
       "time",
       "timeEnd",
@@ -50,8 +47,7 @@
     "no-empty-interface": true,
     "no-eval": true,
     "no-inferrable-types": [
-      true,
-      "ignore-params"
+      false
     ],
     "no-misused-new": true,
     "no-non-null-assertion": true,
@@ -95,7 +91,6 @@
         "variable-declaration": "nospace"
       }
     ],
-    "typeof-compare": true,
     "unified-signatures": true,
     "variable-name": false,
     "whitespace": [
@@ -109,13 +104,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "app",
+      "fate",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "app",
+      ["fate", "app", "example"],
       "kebab-case"
     ],
     "use-input-property-decorator": true,
