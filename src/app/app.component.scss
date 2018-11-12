@@ -34,3 +34,20 @@
     }
   }
 }
+
+/deep/ .custom-block {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid #AAA;
+  outline: 0;
+  cursor: default;
+  -moz-user-select: none;
+  -webkit-user-modify: read-only;
+
+  &:active,
+  &:focus {
+    background: #EEE;
+    border: 1px solid #999;
+  }
+}

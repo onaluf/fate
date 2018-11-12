@@ -11,13 +11,13 @@ export class FateHtmlParserService {
   constructor() { }
 
   public parse(html: string): FateNode {
-    let div = document.createElement('div');
+    const div = document.createElement('div');
     div.innerHTML = html;
     return this.parseElement(div);
   };
 
   public parseElement(element: HTMLElement): FateNode {
-    let nodes = this.parseType(element);
+    const nodes = this.parseType(element);
     let currentNode = nodes[0];
     for (let i = 1; i < nodes.length; i++) {
       currentNode.children.push(nodes[i]);
@@ -25,7 +25,7 @@ export class FateHtmlParserService {
     }
 
     for (let i = 0; i < element.childNodes.length; i ++) {
-      let child = element.childNodes[i];
+      const child = element.childNodes[i];
       if (child instanceof Text) {
         currentNode.children.push(child.data);
       } else if (child instanceof HTMLElement) {
@@ -38,8 +38,8 @@ export class FateHtmlParserService {
   }
 
   public findParentNodes(node: Node, until: Node): Array<FateNode> {
-    let nodes: Array<FateNode> = [];
-    let current: HTMLElement = (node.nodeType === 1)? (node as HTMLElement) : node.parentElement;
+    const nodes: Array<FateNode> = [];
+    let current: HTMLElement = (node.nodeType === 1) ? (node as HTMLElement) : node.parentElement;
     while (current !== until) {
       nodes.push(...this.parseType(current));
       current = current.parentElement;
@@ -48,7 +48,7 @@ export class FateHtmlParserService {
   }
 
   protected getAdditonalStyle(element: HTMLElement): Array<FateNode> {
-    let style = element.style;
+    const style = element.style;
     switch (style.textAlign) {
       case 'left':
         return [new FateNode(FateType.ALIGN_LEFT)];
@@ -73,7 +73,7 @@ export class FateHtmlParserService {
   }
 
   protected parseType(element: HTMLElement): Array<FateNode> {
-    switch(element.nodeName) {
+    switch (element.nodeName) {
       case 'H1':
         return [new FateNode(FateType.HEADER1), ...this.getAdditonalStyle(element)];
       case 'H2':
@@ -81,7 +81,7 @@ export class FateHtmlParserService {
       case 'H3':
         return [new FateNode(FateType.HEADER3), ...this.getAdditonalStyle(element)];
       case 'H4':
-        return [new FateNode(FateType.HEADER4),...this.getAdditonalStyle(element)];
+        return [new FateNode(FateType.HEADER4), ...this.getAdditonalStyle(element)];
       case 'H5':
         return [new FateNode(FateType.HEADER5), ...this.getAdditonalStyle(element)];
       case 'H6':
@@ -127,7 +127,7 @@ export class FateHtmlParserService {
   }
 
   protected parseValue(element: HTMLElement): any {
-    switch(element.nodeName) {
+    switch (element.nodeName) {
       case 'A':
         return element.getAttribute('href');
     }

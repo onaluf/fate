@@ -42,9 +42,19 @@
   }
 
   fate-input {
-    /deep/ .fate-edit-target {
-      resize: vertical;
-      padding: .375rem .75rem;
+    /deep/ {
+      .fate-edit-target {
+        resize: vertical;
+        padding: .375rem .75rem;
+      }
+      .fate-inline-dropdown {
+        display: block;
+        transition: opacity 300ms;
+        background: #222;
+        color: #eee;
+        border-radius: .25rem;
+        z-index: 1080;
+      }
     }
   }
 }

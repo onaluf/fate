@@ -83,7 +83,7 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
         if (!button.classList.contains('fate-ui-button')) {
           button = button.closest('.fate-ui-button');
         }
-        let dropdown =  this.el.nativeElement.querySelector('.fate-ui-dropdown');
+        const dropdown =  this.el.nativeElement.querySelector('.fate-ui-dropdown');
 
         // Enable the dropdown
 
@@ -93,8 +93,8 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
 
         // Postion the dropdown
         setTimeout(() => {
-          let buttonSize = button.getBoundingClientRect();
-          let dropdownSize =  dropdown.getBoundingClientRect();
+          const buttonSize = button.getBoundingClientRect();
+          const dropdownSize =  dropdown.getBoundingClientRect();
           let leftPosition = button.offsetLeft + (buttonSize.width / 2) - (dropdownSize.width / 2);
           // make sure the dropdown is not bleeding out of the viewport
           if (buttonSize.left + window.pageXOffset + (buttonSize.width / 2) - (dropdownSize.width / 2) < 3) {
@@ -102,7 +102,7 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
           } else if (buttonSize.left + window.pageXOffset + (buttonSize.width / 2) + (dropdownSize.width / 2) > window.innerWidth - 3) {
             leftPosition = window.innerWidth - buttonSize.left - window.pageXOffset + button.offsetLeft - dropdownSize.width - 3;
           }
-          let topPosition = button.offsetTop + buttonSize.height - 3;
+          const topPosition = button.offsetTop + buttonSize.height - 3;
           dropdown.style.left = leftPosition + 'px';
           dropdown.style.top = topPosition + 'px';
           // make the dropdown visible
@@ -122,7 +122,7 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
         top += element.offsetTop  || 0;
         left += element.offsetLeft || 0;
         element = element.offsetParent;
-    } while(element);
+    } while (element);
 
     return {
         top: top,
@@ -138,9 +138,9 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
     const component: any = factory.create(this.viewContainerRef.parentInjector);
     if (component.instance.valueChange) {
       component.instance.value = value;
-      component.instance.valueChange.subscribe((value) => {
-        this.dropdownValue = value;
-        this.controller.do(this.uiId, this.dropdownAction, value);
+      component.instance.valueChange.subscribe((newValue) => {
+        this.dropdownValue = newValue;
+        this.controller.do(this.uiId, this.dropdownAction, newValue);
       });
       this.dropdownComponent = this.viewContainerRef.insert(component.hostView);
     } else {
@@ -155,7 +155,7 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
       }
       this.inputSubscription = this.controller.enabled(this.uiId).subscribe((actions: any) => {
         this.enabled = {};
-        for (let action of actions) {
+        for (const action of actions) {
           this.enabled[action.action] = action.value || true;
         }
       });
@@ -163,7 +163,7 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
   }
 
   public ngAfterViewInit() {
-    let handle = document.body.addEventListener('click', (event) => {
+    const handle = document.body.addEventListener('click', (event) => {
       if (!(event.target as Element).closest('.fate-ui-dropdown')) {
         this.dropdownAction = false;
       }
