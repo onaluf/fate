@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, OnInit, OnChanges, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, ViewRef, ViewContainerRef, ComponentFactoryResolver, OnInit, OnChanges, AfterViewInit, OnDestroy } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
@@ -11,7 +11,18 @@ import { FateParserService } from '../fate-parser.service';
 @Component({
   selector: 'fate-input',
   template: `
-    <div [class]="'fate-edit-target ' + customClass" [ngClass]="{empty: empty}" contenteditable="true" [title]="placeholder" [innerHtml]="content"></div>
+    <div class="fate-inline-dropdown"
+         [class.hidden]="!inlineAction"
+         [class.contextual]="inlineAction?.display === 'contextual'"
+         [style.top]="dropdownPostionTop"
+         [style.left]="dropdownPostionLeft">
+      <ng-template #dropdown></ng-template>
+    </div>
+    <div [class]="'fate-edit-target ' + customClass"
+         [ngClass]="{empty: empty}"
+         contenteditable="true"
+         [title]="placeholder"
+         [innerHtml]="content"></div>
   `,
   styles: [`
     :host div.fate-edit-target {
@@ -19,7 +30,6 @@ import { FateParserService } from '../fate-parser.service';
       padding: 10px;
       border: 1px solid #DDD;
       outline: 0;
-      margin-bottom: 10px;
       resize: vertical;
       overflow: auto;
       background: #FFF;
@@ -29,6 +39,23 @@ import { FateParserService } from '../fate-parser.service';
     :host div.fate-edit-target.empty:not(:focus):before {
       content:attr(title);
       color: #636c72;
+    }
+    .fate-inline-dropdown {
+      border: 1px solid #DDD;
+      border-bottom: 0;
+    }
+    .fate-inline-dropdown.hidden {
+      display: none !important;
+    }
+    .fate-inline-dropdown.contextual {
+      position: absolute;
+      background: #FFF;
+      box-shadow: 0 5px 30px -10px rgba(0,0,0,0.4);
+      border-bottom: 1px solid #CCC;
+    }
+    :host {
+      margin-bottom: 10px;
+      /*position: relative;*/
     }
   `],
   providers: [
@@ -49,12 +76,22 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   @Input()
   public placeholder: string = '';
 
+  @ViewChild('dropdown', {
+    read: ViewContainerRef
+  })
+  viewContainerRef: ViewContainerRef
+  private dropdownComponent: ViewRef;
+  private dropdownInstance: any;
+  public dropdownPostionTop: string;
+  public dropdownPostionLeft: string;
+  public inlineAction: any;
+
   public content: SafeHtml;
   public empty: boolean = true;
   private editTarget: any;
   private isFocused: boolean = false;
 
-  constructor(private el: ElementRef, private controller: FateControllerService, private htmlParser: FateHtmlParserService, private parser: FateParserService, private sanitizer: DomSanitizer) {}
+  constructor(private el: ElementRef, private controller: FateControllerService, private htmlParser: FateHtmlParserService, private parser: FateParserService, private sanitizer: DomSanitizer, private factoryResolver: ComponentFactoryResolver) {}
 
   public ngOnInit() {
     this.subscribeToUi(this.uiId);
@@ -70,12 +107,16 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       console.debug('click');
       // On click we save the text Selection
       this.saveSelection();
+      // We check if there is a dropdown matching this context
+      this.checkForDropdownContext();
     });
 
     this.editTarget.addEventListener('keyup', (event: any) => {
       console.debug('keypressed');
       // On click we save the text Selection
       this.saveSelection();
+      // We check if there is a dropdown matching this context
+      this.checkForDropdownContext();
     });
 
     this.editTarget.addEventListener('focus', (event: any) => {
@@ -87,6 +128,14 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     this.editTarget.addEventListener('blur', (event: any) => {
       console.debug('blur');
       this.isFocused = false;
+      if (this.dropdownComponent) {
+        setTimeout(() => {
+          this.inlineAction = null;
+          this.dropdownComponent.destroy();
+        }, 300);
+        // this.inlineAction = null;
+        // this.dropdownComponent.destroy();
+      }
     });
 
     this.editTarget.addEventListener('keydown', (event: any) => {
@@ -103,8 +152,8 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       //
       // Note: It may make sense to delete the selection for normal text
       // input too but for now we only do it on deletion.
-      if (event.key === "Backspace" || event.key === "Delete" && this.selectionRange) {
-        let node = this.selectionRange.commonAncestorContainer;
+      if (event.key === 'Backspace' || event.key === 'Delete' && this.selectionRange) {
+        const node = this.selectionRange.commonAncestorContainer;
         console.debug('Deletion', node);
         if (node instanceof HTMLElement && !(node as HTMLElement).isContentEditable) {
           // this is the case on firefox
@@ -113,7 +162,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
           this.selectionRange.selectNode(node);
           this.selectionRange.deleteContents();
           this.checkEmpty();
-          let tree = this.htmlParser.parseElement(this.editTarget);
+          const tree = this.htmlParser.parseElement(this.editTarget);
           this.changed.forEach(f => f(this.parser.serialize(tree)));
         } else if (node.nodeName === '#text' && !node.parentElement.isContentEditable) {
           // this is the case on webkit
@@ -122,7 +171,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
           this.selectionRange.selectNode(node.parentElement);
           this.selectionRange.deleteContents();
           this.checkEmpty();
-          let tree = this.htmlParser.parseElement(this.editTarget);
+          const tree = this.htmlParser.parseElement(this.editTarget);
           this.changed.forEach(f => f(this.parser.serialize(tree)));
         }
       }
@@ -131,10 +180,10 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     this.editTarget.addEventListener('input', (event: any) => {
       console.debug('value changed');
       this.checkEmpty();
-      let tree = this.htmlParser.parseElement(this.editTarget);
+      const tree = this.htmlParser.parseElement(this.editTarget);
       this.changed.forEach(f => f(this.parser.serialize(tree)));
     });
-    let style: any = window.getComputedStyle(this.editTarget);
+    const style: any = window.getComputedStyle(this.editTarget);
     this.editTarget.style.minHeight = this.getHeight(2);
   }
 
@@ -171,7 +220,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   }
 
   private getHeight(rowCount) {
-    let style:any = window.getComputedStyle(this.editTarget);
+    const style: any = window.getComputedStyle(this.editTarget);
     let height = this.editTarget.style.height = (parseInt(style.lineHeight, 10) * rowCount);
     if (style.boxSizing === 'border-box') {
       height += parseInt(style.paddingTop, 10) + parseInt(style.paddingBottom, 10) + parseInt(style.borderTopWidth, 10) + parseInt(style.borderBottomWidth, 10);
@@ -187,19 +236,22 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     }
     this.uiSubscription = this.controller.channel(uiId).subscribe((command) => {
       // if input is not on focus we save current focus:
-      let focus = document.activeElement;
+      const focus = document.activeElement;
       console.debug('got command ' + command.name + '/' + command.value + ' on channel ' + uiId);
 
       this.editTarget.focus();
       this.restoreSelection();
       if (command.name === 'insertHTML' && this.selectionRange) {
+        // If something is selected we assume that the goal is to replace it,
+        // so first we delete the content
+        this.selectionRange.deleteContents();
         // insertHtml seems quite broken so we do it ourseleves
         this.selectionRange.insertNode(document.createRange().createContextualFragment(command.value));
         // move cusor to the end of the newly inserted element
         this.selectionRange.collapse(false);
         // Force the update of the model
         this.checkEmpty();
-        let tree = this.htmlParser.parseElement(this.editTarget);
+        const tree = this.htmlParser.parseElement(this.editTarget);
         this.changed.forEach(f => f(this.parser.serialize(tree)));
       } else {
         document.execCommand(command.name, false, command.value);
@@ -212,7 +264,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   // Saves the current text selection
   private selectionRange: Range;
   private saveSelection() {
-    let sel = window.getSelection();
+    const sel = window.getSelection();
     if (sel.getRangeAt && sel.rangeCount) {
       this.selectionRange =  sel.getRangeAt(0);
       console.debug('saveSelection', this.selectionRange);
@@ -222,8 +274,8 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   // Restors the current text selection
   private restoreSelection() {
     console.debug('restoreSelection', this.selectionRange);
-    if(this.selectionRange) {
-      let sel = window.getSelection();
+    if (this.selectionRange) {
+      const sel = window.getSelection();
       sel.removeAllRanges();
       sel.addRange(this.selectionRange);
     }
@@ -250,7 +302,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       node = this.selectionRange.commonAncestorContainer.childNodes[this.selectionRange.startOffset];
     }
     if (node && node !== this.editTarget) {
-      let nodes = this.htmlParser.findParentNodes(node, this.editTarget);
+      const nodes = this.htmlParser.findParentNodes(node, this.editTarget);
       console.debug('  -> detected actions: ', nodes);
       this.controller.enableActions(this.uiId, nodes);
     }
@@ -275,4 +327,68 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   }
 
   public registerOnTouched(fn: () => void) {}
+
+  private checkForDropdownContext() {
+    const startPos = Math.max(this.selectionRange.startOffset - 20, 0);
+    const length = this.selectionRange.startOffset - startPos;
+    const context = this.selectionRange.startContainer.textContent.substr(startPos, length);
+
+    const inlineAction = this.controller.getInlineAction(context);
+    if (inlineAction) {
+      if (!this.inlineAction || this.inlineAction.dropdown !== inlineAction.dropdown) {
+        this.inlineAction = inlineAction;
+        this.initDropdown(inlineAction, this.selectionRange.getBoundingClientRect());
+      } else {
+        this.inlineAction = inlineAction;
+        this.updateDropdown(inlineAction.matched);
+      }
+    } else if (this.dropdownComponent) {
+      this.inlineAction = null;
+      this.dropdownComponent.destroy();
+    }
+  }
+
+  private initDropdown(actionComponent, position) {
+    // set the dropdown component
+    if (this.dropdownComponent) {
+      this.dropdownComponent.destroy();
+    }
+    const factory = this.factoryResolver.resolveComponentFactory(actionComponent.dropdown);
+    const component: any = factory.create(this.viewContainerRef.parentInjector);
+    if (component.instance.valueChange) {
+      component.instance.value = actionComponent.matched;
+      component.instance.valueChange.subscribe((value) => {
+        this.editTarget.focus();
+        const end = this.selectionRange.endOffset;
+        this.selectionRange.setStart(this.selectionRange.endContainer, end - actionComponent.matched.length);
+        this.controller.doInline(this.uiId, this.inlineAction, value);
+        // delete the dropdown
+        this.inlineAction = null;
+        this.dropdownComponent.destroy();
+      });
+      this.dropdownComponent = this.viewContainerRef.insert(component.hostView);
+      this.dropdownInstance = component.instance;
+      this.updateDropdownPosition();
+    } else {
+      throw new Error('The component used as a dropdown doesn\'t contain a valueChange emmiter!');
+    }
+  }
+
+  private updateDropdown(value) {
+    this.dropdownInstance.value = value;
+    this.updateDropdownPosition();
+  }
+
+  private updateDropdownPosition() {
+    if (this.inlineAction.display === 'contextual') {
+      // create a selection to get the size of the matching text
+      const parentOffsetBB = this.el.nativeElement.offsetParent.getBoundingClientRect();
+      const range = this.selectionRange.cloneRange();
+      const end = range.endOffset;
+      range.setStart(range.endContainer, end - this.inlineAction.matched.length);
+      const boundingBox = range.getBoundingClientRect();
+      this.dropdownPostionTop = (boundingBox.top + boundingBox.height - parentOffsetBB.top) + 'px';
+      this.dropdownPostionLeft = (boundingBox.left - parentOffsetBB.left) + 'px';
+    }
+  }
 }

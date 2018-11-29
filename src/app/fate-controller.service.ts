@@ -7,7 +7,7 @@ import { FateLinkDropdownComponent } from './fate-link-dropdown/fate-link-dropdo
 
 export interface FateCommand {
   name: string;
-  value : any;
+  value: any;
 }
 
 @Injectable()
@@ -160,8 +160,34 @@ export class FateControllerService {
       dropdown: FateLinkDropdownComponent
     }
   };
+  public registerAction(name: string, action: any) {
+    if (this.actionMapping[name]) {
+      throw new Error('An action with the name "' + name + '" already exists!');
+    } else {
+      this.actionMapping[name] = action;
+    }
+  }
   public getAction(actionName): boolean | any {
     return this.actionMapping[actionName] || false;
+  }
+
+  protected inlineActionMapping: any = {};
+  public registerInlineAction(name: string, action: any) {
+    if (this.inlineActionMapping[name]) {
+      throw new Error('An inline action with the name "' + name + '" already exists!');
+    } else {
+      this.inlineActionMapping[name] = action;
+    }
+  }
+   public getInlineAction(context: string): boolean | any {
+    for (const action of Object.keys(this.inlineActionMapping)) {
+      const match = this.inlineActionMapping[action].regexp.exec(context);
+      if (match) {
+        this.inlineActionMapping[action].matched = match[1];
+        return this.inlineActionMapping[action];
+      }
+    }
+    return false;
   }
 
   protected commandsPipe = {
@@ -189,9 +215,9 @@ export class FateControllerService {
   }
 
   public enableActions(channelId, nodes) {
-    let actions: Array<any> = [];
-    for (let node of nodes) {
-      for (let action in this.actionMapping) {
+    const actions: Array<any> = [];
+    for (const node of nodes) {
+      for (const action in this.actionMapping) {
         if (this.actionMapping[action].detect && this.actionMapping[action].detect === node.type) {
           actions.push({action: action, value: node.value});
         }
@@ -213,7 +239,20 @@ export class FateControllerService {
     }
   }
 
+  public doInline(channel, action, value?) {
+    if (action.dropdown && !value) {
+      if (action.undo) {
+        this.commandsPipe[channel].next({name: action.undo, value: action.value || value});
+      } else {
+        throw new Error('Action "' + action + '"doesn\'t have a undo command');
+      }
+    } else {
+      this.commandsPipe[channel].next({name: action.command, value: action.value || value});
+    }
+  }
+
   public undo(channel, action, value?) {
-    let mapping = this.actionMapping[action].undo;
+    const mapping = this.actionMapping[action].undo;
+    // TODO
   }
 }

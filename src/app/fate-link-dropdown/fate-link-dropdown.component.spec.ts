@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FateLinkDorpdownComponent } from './fate-link-dorpdown.component';
+import { FateLinkDropdownComponent } from './fate-link-dropdown.component';
 
 describe('FateLinkDorpdownComponent', () => {
-  let component: FateLinkDorpdownComponent;
-  let fixture: ComponentFixture<FateLinkDorpdownComponent>;
+  let component: FateLinkDropdownComponent;
+  let fixture: ComponentFixture<FateLinkDropdownComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FateLinkDorpdownComponent ]
+      declarations: [ FateLinkDropdownComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FateLinkDorpdownComponent);
+    fixture = TestBed.createComponent(FateLinkDropdownComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
