@@ -65,7 +65,16 @@ You can use `ngModel` like you would on any other input element and it will beha
 
 ## fate-material
 This is a all-in-one component that includes a UI and an input. It's mean to be a drop-in replacement to textarea in Material forms. Under the hood it's just using the two previously described components and styling them. You don't need to specify any `uiId` because they are generated automatically.
+
+This component is meant to be used like a normal input in material, that is it needs to be wrapped in a `mat-form-field` component like so:
+```html
+<mat-form-field>
+   <fate-material placeholder="Some text"></fate-material>
+</mat-form-field>
+```
+
 ### Properties
+You can use `ngModel` like you would on any other input element and it will behave the same. The value that will be read and exported is dependent of the parser you've decided to inject, by default it's HTML.
 #### row
 This the number of row of text the input should show by default. This mimics the behaviour of the same property on textarea. Note that by default `fate-input` is resizable vertically so this only specifies the default height.
 #### placeholder
