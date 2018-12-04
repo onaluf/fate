@@ -140,9 +140,12 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
 
     this.editTarget.addEventListener('keydown', (event: any) => {
       console.debug('keydown', event);
-      let stopDefaultAndForceUpdate = () => {
+      let stopDefault = () => {
         event.preventDefault();
         event.stopPropagation();
+      }
+      let stopDefaultAndForceUpdate = () => {
+        stopDefault();
         this.checkEmpty();
         const tree = this.htmlParser.parseElement(this.editTarget);
         this.changed.forEach(f => f(this.parser.serialize(tree)));
@@ -197,6 +200,21 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
             !(node.nextSibling as HTMLElement).isContentEditable ) {
           node.nextSibling.remove();
           stopDefaultAndForceUpdate();
+        }
+      }
+      // If a dropdown is currently being displayed we use the up/down
+      // key to navigate its content and return to select the selected
+      // element
+      if(this.inlineAction) {
+        if(event.key === 'Up' || event.key === 'ArrowUp') {
+          stopDefault();
+          this.dropdownInstance.selecPrevious();
+        } else if (event.key === 'Down' || event.key === 'ArrowDown') {
+          stopDefault();
+          this.dropdownInstance.selectNext();
+        } else if (event.key === 'Enter') {
+          stopDefault();
+          this.dropdownInstance.confirmSelection();
         }
       }
     });

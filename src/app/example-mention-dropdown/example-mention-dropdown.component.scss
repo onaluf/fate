@@ -17,6 +17,9 @@
       &:hover {
         background: rgba(200,200,200, 0.5);
       }
+      &.active {
+        background: rgba(200,200,200, 0.5);
+      }
     }
   }
 }
