@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 
 import { FateIcon } from './fate-icon.interface';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class FateIconService implements FateIcon {
 
   protected iconMapping: any = {
