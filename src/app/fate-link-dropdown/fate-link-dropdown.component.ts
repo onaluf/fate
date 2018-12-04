@@ -19,4 +19,8 @@ export class FateLinkDropdownComponent implements FateDropdown {
     this.value = value;
     this.valueChange.emit(value);
   }
+
+  public selectNext () {};
+  public selecPrevious () {};
+  public confirmSelection () {};
 }

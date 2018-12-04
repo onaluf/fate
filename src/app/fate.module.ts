@@ -53,14 +53,6 @@ export { FateType } from './fate-type.enum';
   ],
   entryComponents: [
     FateLinkDropdownComponent
-  ],
-  providers: [
-    FateControllerService,
-    FateHtmlParserService,
-    FateIconService,
-    FateMaterialIconService,
-    FateFontawsomeLegacyIconService,
-    FateParserService
   ]
 })
 export class FateModule { }

@@ -5,7 +5,9 @@ import { FateType } from './fate-type.enum';
 
 import { FateParser } from './fate-parser.interface';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class FateHtmlParserService {
 
   constructor() { }

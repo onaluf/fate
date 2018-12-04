@@ -49,6 +49,7 @@ export class ExampleMentionDropdownComponent implements FateDropdown {
       url: 'https://github.com/onaluf/jQueryGameDevEssentials'
     }
   ];
+  public selected = 0;
 
   public filteredList: Array<any>;
   private filterList() {
@@ -59,10 +60,29 @@ export class ExampleMentionDropdownComponent implements FateDropdown {
         this.filteredList.push(repos);
       }
     }
+    if (this.selected >= this.filteredList.length) {
+      this.selected = Math.max(0, this.filteredList.length - 1);
+    }
   }
 
   public changeValue (value) {
     this._value = value;
     this.valueChange.emit('<span class="repos custom-block" tabindex="0" contenteditable="false" data-href="' + value.url + '" title="' + value.description + '"><i class="fab fa-github"></i> ' + value.name + '</span>&nbsp;');
   }
+
+  public selectNext () {
+    this.selected++;
+    if (this.selected >= this.filteredList.length) {
+      this.selected = this.filteredList.length - 1;
+    }
+  };
+  public selecPrevious () {
+    this.selected--;
+    if (this.selected < 0) {
+      this.selected = 0;
+    }
+  };
+  public confirmSelection () {
+    this.changeValue(this.filteredList[this.selected]);
+  };
 }

@@ -10,7 +10,9 @@ export interface FateCommand {
   value: any;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class FateControllerService {
 
   // List of available commands, alphabetically

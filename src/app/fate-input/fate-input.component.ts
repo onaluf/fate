@@ -140,6 +140,16 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
 
     this.editTarget.addEventListener('keydown', (event: any) => {
       console.debug('keydown', event);
+      let stopDefault = () => {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      let stopDefaultAndForceUpdate = () => {
+        stopDefault();
+        this.checkEmpty();
+        const tree = this.htmlParser.parseElement(this.editTarget);
+        this.changed.forEach(f => f(this.parser.serialize(tree)));
+      }
       // This is needed because, if the current selection is part
       // of a non-editable child of the input, the default delete won't
       // work.
@@ -158,21 +168,53 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
         if (node instanceof HTMLElement && !(node as HTMLElement).isContentEditable) {
           // this is the case on firefox
           console.debug('deleting inside un-editable block detected');
-          event.preventDefault();
           this.selectionRange.selectNode(node);
           this.selectionRange.deleteContents();
-          this.checkEmpty();
-          const tree = this.htmlParser.parseElement(this.editTarget);
-          this.changed.forEach(f => f(this.parser.serialize(tree)));
+          stopDefaultAndForceUpdate();
         } else if (node.nodeName === '#text' && !node.parentElement.isContentEditable) {
           // this is the case on webkit
           console.debug('deleting inside un-editable block detected');
-          event.preventDefault();
           this.selectionRange.selectNode(node.parentElement);
           this.selectionRange.deleteContents();
-          this.checkEmpty();
-          const tree = this.htmlParser.parseElement(this.editTarget);
-          this.changed.forEach(f => f(this.parser.serialize(tree)));
+          stopDefaultAndForceUpdate();
+        }
+      }
+      // This is needed because, there is a bug in Firefox that prevent
+      // deleting a uneditable element inside an editable element. So we
+      // reimplement the whole function for all browsers.
+      if (event.key === 'Backspace' && this.selectionRange) {
+        const node = this.selectionRange.commonAncestorContainer;
+        if (this.selectionRange.collapsed === true &&
+            this.selectionRange.startOffset === 0 &&
+            node.previousSibling instanceof HTMLElement &&
+            !(node.previousSibling as HTMLElement).isContentEditable ) {
+          node.previousSibling.remove();
+          stopDefaultAndForceUpdate();
+        }
+      } else if (event.key === 'Delete' && this.selectionRange) {
+        const node = this.selectionRange.commonAncestorContainer;
+        if (this.selectionRange.collapsed === true &&
+            this.selectionRange.endContainer.nodeName === '#text' &&
+            this.selectionRange.endOffset === (this.selectionRange.endContainer as Text).length &&
+            node.nextSibling instanceof HTMLElement &&
+            !(node.nextSibling as HTMLElement).isContentEditable ) {
+          node.nextSibling.remove();
+          stopDefaultAndForceUpdate();
+        }
+      }
+      // If a dropdown is currently being displayed we use the up/down
+      // key to navigate its content and return to select the selected
+      // element
+      if(this.inlineAction) {
+        if(event.key === 'Up' || event.key === 'ArrowUp') {
+          stopDefault();
+          this.dropdownInstance.selecPrevious();
+        } else if (event.key === 'Down' || event.key === 'ArrowDown') {
+          stopDefault();
+          this.dropdownInstance.selectNext();
+        } else if (event.key === 'Enter') {
+          stopDefault();
+          this.dropdownInstance.confirmSelection();
         }
       }
     });
