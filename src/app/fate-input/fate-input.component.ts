@@ -120,14 +120,16 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     });
 
     this.editTarget.addEventListener('focus', (event: any) => {
-      console.debug('focus');
+      console.debug('(' + this.uiId + ') focus');
       // On focus we restore it
       this.restoreSelection();
       this.isFocused = true;
     });
     this.editTarget.addEventListener('blur', (event: any) => {
-      console.debug('blur');
+      console.debug('(' + this.uiId + ') blur');
       this.isFocused = false;
+      this.saveSelection();
+
       if (this.dropdownComponent) {
         setTimeout(() => {
           this.inlineAction = null;
@@ -140,11 +142,11 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
 
     this.editTarget.addEventListener('keydown', (event: any) => {
       console.debug('keydown', event);
-      let stopDefault = () => {
+      const stopDefault = () => {
         event.preventDefault();
         event.stopPropagation();
       }
-      let stopDefaultAndForceUpdate = () => {
+      const stopDefaultAndForceUpdate = () => {
         stopDefault();
         this.checkEmpty();
         const tree = this.htmlParser.parseElement(this.editTarget);
@@ -205,8 +207,8 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       // If a dropdown is currently being displayed we use the up/down
       // key to navigate its content and return to select the selected
       // element
-      if(this.inlineAction) {
-        if(event.key === 'Up' || event.key === 'ArrowUp') {
+      if (this.inlineAction) {
+        if (event.key === 'Up' || event.key === 'ArrowUp') {
           stopDefault();
           this.dropdownInstance.selecPrevious();
         } else if (event.key === 'Down' || event.key === 'ArrowDown') {
@@ -279,9 +281,8 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     this.uiSubscription = this.controller.channel(uiId).subscribe((command) => {
       // if input is not on focus we save current focus:
       const focus = document.activeElement;
-      console.debug('got command ' + command.name + '/' + command.value + ' on channel ' + uiId);
+      console.debug('(' + uiId + ') got command ' + command.name + '/' + command.value);
 
-      this.editTarget.focus();
       this.restoreSelection();
       if (command.name === 'insertHTML' && this.selectionRange) {
         // If something is selected we assume that the goal is to replace it,
@@ -306,21 +307,32 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   // Saves the current text selection
   private selectionRange: Range;
   private saveSelection() {
-    const sel = window.getSelection();
-    if (sel.getRangeAt && sel.rangeCount) {
-      this.selectionRange =  sel.getRangeAt(0);
-      console.debug('saveSelection', this.selectionRange);
-      this.detectStyle();
+    if (this.selectionInEditableTarget()) {
+      const sel = window.getSelection();
+      if (sel.getRangeAt && sel.rangeCount) {
+        this.selectionRange = sel.getRangeAt(0);
+        console.debug('(' + this.uiId + ') saveSelection', this.selectionRange);
+        this.detectStyle();
+      }
     }
   }
   // Restors the current text selection
   private restoreSelection() {
-    console.debug('restoreSelection', this.selectionRange);
+    if (this.selectionInEditableTarget()) {
+      return;
+    }
+    console.debug('(' + this.uiId + ') restoreSelection', this.selectionRange);
     if (this.selectionRange) {
       const sel = window.getSelection();
       sel.removeAllRanges();
       sel.addRange(this.selectionRange);
     }
+  }
+
+  private selectionInEditableTarget() {
+    const sel = window.getSelection();
+    const node = sel.getRangeAt && sel.rangeCount && sel.getRangeAt(0) && sel.getRangeAt(0).commonAncestorContainer;
+    return node && (node === this.editTarget || (node.parentElement.closest('.fate-edit-target') && (node.parentElement.closest('.fate-edit-target') === this.editTarget)));
   }
 
   private detectStyle() {
