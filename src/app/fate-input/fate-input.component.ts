@@ -128,6 +128,8 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     this.editTarget.addEventListener('blur', (event: any) => {
       console.debug('blur');
       this.isFocused = false;
+      this.saveSelection();
+
       if (this.dropdownComponent) {
         setTimeout(() => {
           this.inlineAction = null;
@@ -140,11 +142,11 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
 
     this.editTarget.addEventListener('keydown', (event: any) => {
       console.debug('keydown', event);
-      let stopDefault = () => {
+      const stopDefault = () => {
         event.preventDefault();
         event.stopPropagation();
       }
-      let stopDefaultAndForceUpdate = () => {
+      const stopDefaultAndForceUpdate = () => {
         stopDefault();
         this.checkEmpty();
         const tree = this.htmlParser.parseElement(this.editTarget);
@@ -205,8 +207,8 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       // If a dropdown is currently being displayed we use the up/down
       // key to navigate its content and return to select the selected
       // element
-      if(this.inlineAction) {
-        if(event.key === 'Up' || event.key === 'ArrowUp') {
+      if (this.inlineAction) {
+        if (event.key === 'Up' || event.key === 'ArrowUp') {
           stopDefault();
           this.dropdownInstance.selecPrevious();
         } else if (event.key === 'Down' || event.key === 'ArrowDown') {
@@ -315,6 +317,9 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   }
   // Restors the current text selection
   private restoreSelection() {
+    if (this.selectionInEditableTarget()) {
+      this.saveSelection();
+    }
     console.debug('restoreSelection', this.selectionRange);
     if (this.selectionRange) {
       const sel = window.getSelection();
@@ -323,9 +328,14 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     }
   }
 
+  private selectionInEditableTarget() {
+    const node = this.selectionRange && this.selectionRange.commonAncestorContainer;
+    return node && (node.parentElement.closest('.fate-edit-target') && node !== this.editTarget);
+  }
+
   private detectStyle() {
     let node = this.selectionRange.commonAncestorContainer;
-    if (!node || (!(node.parentElement.closest('.fate-edit-target') && node !== this.editTarget))) {
+    if (!this.selectionInEditableTarget()) {
       // The current selection is not contained in the editable zone.
       // this is most likely due to the input being empty.
       return;
