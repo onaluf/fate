@@ -28,8 +28,8 @@ export class FateBootstrapComponent extends FateUiComponent implements ControlVa
   public buttons: Array<string>;
 
   // implentation of ControlValueAccessor:
-  private changed = new Array<(value: string) => void>();
-  private clickOngoing: boolean = false;
+  protected changed = new Array<(value: string) => void>();
+  protected clickOngoing: boolean = false;
 
   public passthrough: string;
   public uiId;

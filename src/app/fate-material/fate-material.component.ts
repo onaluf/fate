@@ -48,7 +48,7 @@ export class FateMaterialComponent extends FateUiComponent implements  ControlVa
     this._placeholder = placeholder;
     this.stateChanges.next();
   }
-  private _placeholder: string;
+  protected _placeholder: string;
 
   @HostBinding()
   id = `${this.uiId}`;
@@ -97,7 +97,7 @@ export class FateMaterialComponent extends FateUiComponent implements  ControlVa
     this._required = !!req;
     this.stateChanges.next();
   }
-  private _required = false;
+  protected _required = false;
 
   @Input()
   get disabled() {
@@ -107,7 +107,7 @@ export class FateMaterialComponent extends FateUiComponent implements  ControlVa
     this._disabled = !!dis;
     this.stateChanges.next();
   }
-  private _disabled = false;
+  protected _disabled = false;
 
   public errorState = false;
 
@@ -126,7 +126,7 @@ export class FateMaterialComponent extends FateUiComponent implements  ControlVa
   public stateChanges = new Subject<void>();
   public focused = false;
 
-  private changed = new Array<(value: string) => void>();
+  protected changed = new Array<(value: string) => void>();
 
   constructor(controller: FateControllerService, parser: FateParserService, icon: FateIconService, el: ElementRef, @Optional() @Self() public ngControl: NgControl, factoryResolver: ComponentFactoryResolver) {
     super(el, controller, icon, parser, factoryResolver);

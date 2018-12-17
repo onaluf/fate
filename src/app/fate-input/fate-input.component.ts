@@ -80,18 +80,18 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     read: ViewContainerRef
   })
   viewContainerRef: ViewContainerRef
-  private dropdownComponent: ViewRef;
-  private dropdownInstance: any;
+  protected dropdownComponent: ViewRef;
+  protected dropdownInstance: any;
   public dropdownPostionTop: string;
   public dropdownPostionLeft: string;
   public inlineAction: any;
 
   public content: SafeHtml;
   public empty: boolean = true;
-  private editTarget: any;
-  private isFocused: boolean = false;
+  protected editTarget: any;
+  protected isFocused: boolean = false;
 
-  constructor(private el: ElementRef, private controller: FateControllerService, private htmlParser: FateHtmlParserService, private parser: FateParserService, private sanitizer: DomSanitizer, private factoryResolver: ComponentFactoryResolver) {}
+  constructor(protected el: ElementRef, protected controller: FateControllerService, protected htmlParser: FateHtmlParserService, protected parser: FateParserService, protected sanitizer: DomSanitizer, protected factoryResolver: ComponentFactoryResolver) {}
 
   public ngOnInit() {
     this.subscribeToUi(this.uiId);
@@ -248,11 +248,11 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     }
   }
 
-  private computeHeight() {
+  protected computeHeight() {
     this.editTarget.style.height = this.getHeight(this.row);
   }
 
-  private checkEmpty() {
+  protected checkEmpty() {
     if (this.editTarget.innerHTML === '') {
       this.editTarget.innerHTML = '<br>';
       this.empty = true;
@@ -263,7 +263,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     }
   }
 
-  private getHeight(rowCount) {
+  protected getHeight(rowCount) {
     const style: any = window.getComputedStyle(this.editTarget);
     let height = this.editTarget.style.height = (parseInt(style.lineHeight, 10) * rowCount);
     if (style.boxSizing === 'border-box') {
@@ -272,8 +272,8 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     return height + 'px';
   }
 
-  private uiSubscription: Subscription;
-  private subscribeToUi(uiId) {
+  protected uiSubscription: Subscription;
+  protected subscribeToUi(uiId) {
     console.debug('subscribing to ' + uiId, this.uiSubscription);
     if (this.uiSubscription) {
       this.uiSubscription.unsubscribe();
@@ -305,8 +305,8 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   }
 
   // Saves the current text selection
-  private selectionRange: Range;
-  private saveSelection() {
+  protected selectionRange: Range;
+  protected saveSelection() {
     if (this.selectionInEditableTarget()) {
       const sel = window.getSelection();
       if (sel.getRangeAt && sel.rangeCount) {
@@ -317,7 +317,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     }
   }
   // Restors the current text selection
-  private restoreSelection() {
+  protected restoreSelection() {
     if (this.selectionInEditableTarget()) {
       return;
     }
@@ -329,13 +329,13 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     }
   }
 
-  private selectionInEditableTarget() {
+  protected selectionInEditableTarget() {
     const sel = window.getSelection();
     const node = sel.getRangeAt && sel.rangeCount && sel.getRangeAt(0) && sel.getRangeAt(0).commonAncestorContainer;
     return node && (node === this.editTarget || (node.parentElement.closest('.fate-edit-target') && (node.parentElement.closest('.fate-edit-target') === this.editTarget)));
   }
 
-  private detectStyle() {
+  protected detectStyle() {
     let node = this.selectionRange.commonAncestorContainer;
     if (!node || (!(node.parentElement.closest('.fate-edit-target') && node !== this.editTarget))) {
       // The current selection is not contained in the editable zone.
@@ -363,7 +363,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   }
 
   // implentation of ControlValueAccessor:
-  private changed = new Array<(value: string) => void>();
+  protected changed = new Array<(value: string) => void>();
 
   public writeValue(value: string) {
     if (value) {
@@ -382,7 +382,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
 
   public registerOnTouched(fn: () => void) {}
 
-  private checkForDropdownContext() {
+  protected checkForDropdownContext() {
     const startPos = Math.max(this.selectionRange.startOffset - 20, 0);
     const length = this.selectionRange.startOffset - startPos;
     const context = this.selectionRange.startContainer.textContent.substr(startPos, length);
@@ -402,7 +402,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     }
   }
 
-  private initDropdown(actionComponent, position) {
+  protected initDropdown(actionComponent, position) {
     // set the dropdown component
     if (this.dropdownComponent) {
       this.dropdownComponent.destroy();
@@ -428,12 +428,12 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     }
   }
 
-  private updateDropdown(value) {
+  protected updateDropdown(value) {
     this.dropdownInstance.value = value;
     this.updateDropdownPosition();
   }
 
-  private updateDropdownPosition() {
+  protected updateDropdownPosition() {
     if (this.inlineAction.display === 'contextual') {
       // create a selection to get the size of the matching text
       const parentOffsetBB = this.el.nativeElement.offsetParent.getBoundingClientRect();
