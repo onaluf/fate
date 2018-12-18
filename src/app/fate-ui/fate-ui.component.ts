@@ -54,11 +54,11 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
   public enabled: any = {};
   public dropdownAction: boolean | string = false;
   public dropdownValue: string;
-  private dropdownComponent: ViewRef;
+  protected dropdownComponent: ViewRef;
 
-  private inputSubscription: Subscription;
+  protected inputSubscription: Subscription;
 
-  constructor(private el: ElementRef, public controller: FateControllerService, public icon: FateIconService, private parser: FateParserService, private factoryResolver: ComponentFactoryResolver) { }
+  constructor(protected el: ElementRef, public controller: FateControllerService, public icon: FateIconService, protected parser: FateParserService, protected factoryResolver: ComponentFactoryResolver) { }
 
   @HostListener('mousedown', ['$event'])
   public mouseDown(event) {
@@ -115,7 +115,7 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  private getOffset(element) {
+  protected getOffset(element) {
     let top = 0;
     let left = 0;
     do {
@@ -130,7 +130,7 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
     };
   }
 
-  private initDropdown(actionComponent, value) {
+  protected initDropdown(actionComponent, value) {
     if (this.dropdownComponent) {
       this.dropdownComponent.destroy();
     }
