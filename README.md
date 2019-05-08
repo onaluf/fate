@@ -124,3 +124,38 @@ export class MyIconService extends FateIconService {
   // ...
 })
 ```
+
+
+## Custom UI Button
+If you want to add you own custom action to the UI toolbar you can do it too, just follow the steps bellow. You can see the code in action in this [Stackblitz](https://stackblitz.com/edit/angular-yrnv34)
+
+### Register the action with the Fate controller
+In you app component you can inject the fate controller and register the new action you want to implement with the `registerAction` method like so:
+
+```typescript
+@Component({
+  //...
+})
+export class AppComponent  {
+  constructor(fateControllerService: FateControllerService){
+    fateControllerService.registerAction('custom', {
+      command: 'fontSize', // One of https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
+      value: '2',
+      name: 'custom', 
+      label: 'C', // if you don't want to use icons
+    });
+  };
+}
+```
+If you want to have a custom icon to represent you button you can have a look at the previous section.
+
+### Add the icon to your toolbar
+In the template where your ui is included you can simply add the new custom button by it's `name`:
+
+```html
+<fate-ui [buttons]="['custom']"></fate-ui>
+```
+
+In this example we only show the new icon but you can include and existing icon too.
+
+
