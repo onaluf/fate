@@ -28,12 +28,28 @@ export class FateHtmlParserService {
 
     for (let i = 0; i < element.childNodes.length; i ++) {
       const child = element.childNodes[i];
-      if (child instanceof Text) {
-        currentNode.children.push(child.data);
-      } else if (child instanceof HTMLElement) {
-        currentNode.children.push(this.parseElement(child));
+      // pick ahead to look for <br>
+      if (i < element.childNodes.length -1 && this.isLinebreak(element.childNodes[i + 1])) {
+        if (child instanceof Text) {
+          // wrap the text in a paragraph
+          let paragraph = new FateNode(FateType.PARAGRAPH);
+          paragraph.children.push(child.data);
+          currentNode.children.push(paragraph);
+        } else if (child instanceof HTMLElement) {
+          // insert an empty paragraph
+          currentNode.children.push(new FateNode(FateType.PARAGRAPH));
+          currentNode.children.push(this.parseElement(child));
+        } else {
+          // ignore
+        }
       } else {
-        // ignore
+        if (child instanceof Text) {
+          currentNode.children.push(child.data);
+        } else if (child instanceof HTMLElement) {
+          currentNode.children.push(this.parseElement(child));
+        } else {
+          // ignore
+        }
       }
     }
     return nodes[0];
@@ -192,6 +208,10 @@ export class FateHtmlParserService {
         return this.serialize(node);
     }
   };
+
+  protected isLinebreak(child: Node): boolean {
+    return (child instanceof HTMLElement && child.nodeName === 'BR');
+  }
 
   // Saves a Tree in string representation
   public serialize (node: FateNode, fallbackToBr: boolean = false): string {
