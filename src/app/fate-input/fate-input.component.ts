@@ -77,7 +77,8 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   public placeholder: string = '';
 
   @ViewChild('dropdown', {
-    read: ViewContainerRef
+    read: ViewContainerRef,
+    static: true,
   })
   viewContainerRef: ViewContainerRef
   protected dropdownComponent: ViewRef;

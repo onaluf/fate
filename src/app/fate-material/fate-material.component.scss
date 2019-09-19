@@ -24,7 +24,7 @@
     }
 
     padding: 0;
-    /deep/ .fate-ui-button {
+    ::ng-deep .fate-ui-button {
       height: 40px;
       line-height: 23px;
       padding: 7px 0 11px;
@@ -44,10 +44,10 @@
         background-color: #DFDFDF;
       }
     }
-    /deep/ .fate-ui-dropdown {
+    ::ng-deep .fate-ui-dropdown {
       background-color: #EEE;
     }
-    /deep/ .fate-ui-separator {
+    ::ng-deep .fate-ui-separator {
       margin-right: -4px;
       margin-top: 2px;
       margin-bottom: 2px;
@@ -61,7 +61,7 @@
   }
 
   fate-input {
-    /deep/ {
+    ::ng-deep {
       div.fate-edit-target {
         border: none;
         background: none;
