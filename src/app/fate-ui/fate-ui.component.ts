@@ -68,7 +68,8 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
   }
 
   @ViewChild('dropdown', {
-    read: ViewContainerRef
+    read: ViewContainerRef,
+    static: true,
   })
   viewContainerRef: ViewContainerRef
 

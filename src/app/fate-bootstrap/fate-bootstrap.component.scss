@@ -20,7 +20,7 @@
       pointer-events: all;
     }
 
-    /deep/ {
+    ::ng-deep {
       .fate-ui-button {
         &:active,
         &.enabled,
@@ -42,7 +42,7 @@
   }
 
   fate-input {
-    /deep/ {
+    ::ng-deep {
       .fate-edit-target {
         resize: vertical;
         padding: .375rem .75rem;
