@@ -1,6 +1,7 @@
 import { Component, Input, HostBinding, HostListener, Optional, Self, ElementRef, OnDestroy, ComponentFactoryResolver } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
 import { FateUiComponent } from '../fate-ui/fate-ui.component';
 import { FateControllerService } from '../fate-controller.service';
@@ -94,7 +95,7 @@ export class FateMaterialComponent extends FateUiComponent implements  ControlVa
     return this._required;
   }
   set required(req) {
-    this._required = !!req;
+    this._required = coerceBooleanProperty(req);
     this.stateChanges.next();
   }
   protected _required = false;
@@ -104,7 +105,7 @@ export class FateMaterialComponent extends FateUiComponent implements  ControlVa
     return this._disabled;
   }
   set disabled(dis) {
-    this._disabled = !!dis;
+    this._disabled = coerceBooleanProperty(dis);
     this.stateChanges.next();
   }
   protected _disabled = false;

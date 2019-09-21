@@ -5,7 +5,6 @@ import { Subscription } from 'rxjs';
 import { FateControllerService } from '../fate-controller.service';
 import { FateParserService } from '../fate-parser.service';
 import { FateIconService } from '../fate-icon.service';
-import { FateDropdown } from '../fate-dropdown.interface';
 
 @Component({
   selector: 'fate-ui',
