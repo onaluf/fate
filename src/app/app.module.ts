@@ -11,7 +11,7 @@ import { ExampleCustomParserService } from './example-custom-parser.service';
 
 import { AppComponent } from './app.component';
 
-import { FateModule, FateHtmlParserService, FateParserService } from './fate.module';
+import { FateModule, FateMaterialModule, FateHtmlParserService, FateParserService } from './fate.module';
 
 
 @NgModule({
@@ -23,6 +23,7 @@ import { FateModule, FateHtmlParserService, FateParserService } from './fate.mod
     BrowserModule,
     FormsModule,
     FateModule,
+    FateMaterialModule,
     MatFormFieldModule,
     MatInputModule,
     BrowserAnimationsModule,

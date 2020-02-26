@@ -25,6 +25,22 @@ import { FateModule } from 'fate-editor';
 }) // ...
 ```
 
+If you want to use the material version of fate **you will now need to add** `FateMaterialModule` to your imports too:
+```typescript
+import { FateModule, FateMaterialModule } from 'fate-editor';
+// ...
+
+@NgModule({
+  // ...
+  imports: [
+    // ...
+    FateModule,
+    FateMaterialModule
+  ]
+  // ...
+}) // ...
+```
+
 # Available Component
 
 ## fate-input

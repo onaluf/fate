@@ -9,13 +9,6 @@ import { FateBootstrapComponent } from './fate-bootstrap/fate-bootstrap.componen
 import { FateMaterialComponent } from './fate-material/fate-material.component';
 import { FateLinkDropdownComponent } from './fate-link-dropdown/fate-link-dropdown.component';
 
-import { FateControllerService } from './fate-controller.service';
-import { FateHtmlParserService } from './fate-html-parser.service';
-import { FateIconService } from './fate-icon.service';
-import { FateMaterialIconService } from './fate-material-icon.service';
-import { FateFontawsomeLegacyIconService } from './fate-fontawsome-legacy-icon.service';
-import { FateParserService } from './fate-parser.service';
-
 export { FateParser } from './fate-parser.interface';
 export { FateIcon } from './fate-icon.interface';
 export { FateDropdown } from './fate-dropdown.interface';
@@ -36,7 +29,6 @@ export { FateType } from './fate-type.enum';
     FateInputComponent,
     FateUiComponent,
     FateBootstrapComponent,
-    FateMaterialComponent,
     FateLinkDropdownComponent,
   ],
   imports: [
@@ -48,7 +40,6 @@ export { FateType } from './fate-type.enum';
     FateUiComponent,
     FateInputComponent,
     FateBootstrapComponent,
-    FateMaterialComponent,
     FateLinkDropdownComponent
   ],
   entryComponents: [
@@ -56,3 +47,19 @@ export { FateType } from './fate-type.enum';
   ]
 })
 export class FateModule { }
+
+@NgModule({
+  declarations: [
+    FateMaterialComponent,
+  ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatFormFieldModule,
+    FateModule
+  ],
+  exports: [
+    FateMaterialComponent,
+  ]
+})
+export class FateMaterialModule { }
