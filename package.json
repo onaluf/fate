@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --base-href '/fate/'",
+    "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
