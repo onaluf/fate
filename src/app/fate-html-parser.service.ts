@@ -3,8 +3,6 @@ import { Injectable } from '@angular/core';
 import { FateNode } from './fate-node';
 import { FateType } from './fate-type.enum';
 
-import { FateParser } from './fate-parser.interface';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -29,16 +27,16 @@ export class FateHtmlParserService {
     for (let i = 0; i < element.childNodes.length; i ++) {
       const child = element.childNodes[i];
       // pick ahead to look for <br>
-      if (i < element.childNodes.length -1 && this.isLinebreak(element.childNodes[i + 1])) {
+      if (i < element.childNodes.length - 1 && this.isLinebreak(element.childNodes[i + 1])) {
         if (child instanceof Text) {
           // wrap the text in a paragraph
-          let paragraph = new FateNode(FateType.PARAGRAPH);
+          const paragraph = new FateNode(FateType.PARAGRAPH);
           paragraph.children.push(child.data);
           currentNode.children.push(paragraph);
         } else if (child instanceof HTMLElement) {
           // insert an empty paragraph
-          currentNode.children.push(new FateNode(FateType.PARAGRAPH));
           currentNode.children.push(this.parseElement(child));
+          currentNode.children.push(new FateNode(FateType.PARAGRAPH));
         } else {
           // ignore
         }

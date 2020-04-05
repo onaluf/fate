@@ -94,6 +94,12 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
 
   constructor(protected el: ElementRef, protected controller: FateControllerService, protected htmlParser: FateHtmlParserService, protected parser: FateParserService, protected sanitizer: DomSanitizer, protected factoryResolver: ComponentFactoryResolver) {}
 
+  private reactToChanes() {
+    const tree = this.htmlParser.parseElement(this.editTarget);
+    const serializedTree = this.parser.serialize(tree);
+    this.changed.forEach(f => f(serializedTree));
+  }
+
   public ngOnInit() {
     this.subscribeToUi(this.uiId);
   }
@@ -150,8 +156,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       const stopDefaultAndForceUpdate = () => {
         stopDefault();
         this.checkEmpty();
-        const tree = this.htmlParser.parseElement(this.editTarget);
-        this.changed.forEach(f => f(this.parser.serialize(tree)));
+        this.reactToChanes();
       }
       // This is needed because, if the current selection is part
       // of a non-editable child of the input, the default delete won't
@@ -225,8 +230,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
     this.editTarget.addEventListener('input', (event: any) => {
       console.debug('value changed');
       this.checkEmpty();
-      const tree = this.htmlParser.parseElement(this.editTarget);
-      this.changed.forEach(f => f(this.parser.serialize(tree)));
+      this.reactToChanes();
     });
     const style: any = window.getComputedStyle(this.editTarget);
     this.editTarget.style.minHeight = this.getHeight(2);
@@ -295,8 +299,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
         this.selectionRange.collapse(false);
         // Force the update of the model
         this.checkEmpty();
-        const tree = this.htmlParser.parseElement(this.editTarget);
-        this.changed.forEach(f => f(this.parser.serialize(tree)));
+        this.reactToChanes();
       } else {
         document.execCommand(command.name, false, command.value);
       }
