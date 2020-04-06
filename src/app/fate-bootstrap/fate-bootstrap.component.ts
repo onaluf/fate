@@ -1,7 +1,7 @@
 import { Component, Input, ElementRef, HostListener, ComponentFactoryResolver } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
-import { FateUiComponent } from '../fate-ui/fate-ui.component';
+import { defaultButtons } from '../fate-ui/fate-ui.component';
 import { FateControllerService } from '../fate-controller.service';
 import { FateParserService } from '../fate-parser.service';
 import { FateIconService } from '../fate-icon.service';
@@ -16,7 +16,7 @@ let instanceCounter = 0;
     {provide: NG_VALUE_ACCESSOR, useExisting: FateBootstrapComponent, multi: true}
   ],
 })
-export class FateBootstrapComponent extends FateUiComponent implements ControlValueAccessor {
+export class FateBootstrapComponent implements ControlValueAccessor {
 
   @Input()
   row: number;
@@ -25,7 +25,7 @@ export class FateBootstrapComponent extends FateUiComponent implements ControlVa
   placeholder: string;
 
   @Input()
-  public buttons: Array<string>;
+  public buttons: Array<string> = defaultButtons;
 
   // implentation of ControlValueAccessor:
   protected changed = new Array<(value: string) => void>();
@@ -56,10 +56,10 @@ export class FateBootstrapComponent extends FateUiComponent implements ControlVa
   @HostListener('focusin', ['$event'])
   public focus (event: any) {
     this.uiVisible = true;
+    console.info('boostrap focus!')
   }
 
   constructor(el: ElementRef, controller: FateControllerService, parser: FateParserService, icon: FateIconService, factoryResolver: ComponentFactoryResolver) {
-    super(el, controller, icon, parser, factoryResolver);
     this.uiId = 'bootstrap-' + (instanceCounter++);
   }
 
