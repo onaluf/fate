@@ -42,9 +42,6 @@ export { FateType } from './fate-type.enum';
     FateBootstrapComponent,
     FateLinkDropdownComponent
   ],
-  entryComponents: [
-    FateLinkDropdownComponent
-  ]
 })
 export class FateModule { }
 

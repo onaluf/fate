@@ -6,6 +6,39 @@ import { FateControllerService } from '../fate-controller.service';
 import { FateParserService } from '../fate-parser.service';
 import { FateIconService } from '../fate-icon.service';
 
+export const defaultButtons = [
+  'bold',
+  'italic',
+  'underline',
+  'strike',
+  'separator',
+  'subscript',
+  'superscript',
+  'link',
+  'separator',
+  'heading1',
+  'heading2',
+  'heading3',
+  'heading4',
+  'heading5',
+  'heading6',
+  'normal',
+  'separator',
+  'indent',
+  'outdent',
+  'ordered',
+  'unordered',
+  'separator',
+  'center',
+  'justify',
+  'left',
+  'right',
+  'separator',
+  'undo',
+  'redo',
+  'clean'
+];
+
 @Component({
   selector: 'fate-ui',
   templateUrl: './fate-ui.component.html',
@@ -17,38 +50,7 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
   public uiId: string = 'default';
 
   @Input()
-  public buttons: Array<string> = [
-    'bold',
-    'italic',
-    'underline',
-    'strike',
-    'separator',
-    'subscript',
-    'superscript',
-    'link',
-    'separator',
-    'heading1',
-    'heading2',
-    'heading3',
-    'heading4',
-    'heading5',
-    'heading6',
-    'normal',
-    'separator',
-    'indent',
-    'outdent',
-    'ordered',
-    'unordered',
-    'separator',
-    'center',
-    'justify',
-    'left',
-    'right',
-    'separator',
-    'undo',
-    'redo',
-    'clean'
-  ];
+  public buttons: Array<string> = defaultButtons;
 
   public enabled: any = {};
   public dropdownAction: boolean | string = false;

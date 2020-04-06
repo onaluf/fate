@@ -1,9 +1,9 @@
-import { Component, Input, HostBinding, HostListener, Optional, Self, ElementRef, OnDestroy, ComponentFactoryResolver } from '@angular/core';
+import { Component, Input, HostBinding, HostListener, Optional, Self, ElementRef, OnDestroy } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
-import { FateUiComponent } from '../fate-ui/fate-ui.component';
+import { defaultButtons } from '../fate-ui/fate-ui.component';
 import { FateControllerService } from '../fate-controller.service';
 import { FateParserService } from '../fate-parser.service';
 import { FateIconService } from '../fate-icon.service';
@@ -22,13 +22,13 @@ let instanceCounter = 0;
     { provide: FateIconService, useClass: FateMaterialIconService }
   ],
 })
-export class FateMaterialComponent extends FateUiComponent implements  ControlValueAccessor, OnDestroy, MatFormFieldControl<string>  {
+export class FateMaterialComponent implements  ControlValueAccessor, OnDestroy, MatFormFieldControl<string>  {
 
   @Input()
   row: number;
 
   @Input()
-  public buttons: Array<string>;
+  public buttons: Array<string> = defaultButtons;
 
   @Input()
   public get value(): string {
@@ -51,6 +51,7 @@ export class FateMaterialComponent extends FateUiComponent implements  ControlVa
   }
   protected _placeholder: string;
 
+  public uiId;
   @HostBinding()
   id = `${this.uiId}`;
 
@@ -123,14 +124,12 @@ export class FateMaterialComponent extends FateUiComponent implements  ControlVa
 
   public onContainerClick(event: MouseEvent) {}
 
-  public uiId;
   public stateChanges = new Subject<void>();
   public focused = false;
 
   protected changed = new Array<(value: string) => void>();
 
-  constructor(controller: FateControllerService, parser: FateParserService, icon: FateIconService, el: ElementRef, @Optional() @Self() public ngControl: NgControl, factoryResolver: ComponentFactoryResolver) {
-    super(el, controller, icon, parser, factoryResolver);
+  constructor(controller: FateControllerService, parser: FateParserService, icon: FateIconService, el: ElementRef, @Optional() @Self() public ngControl: NgControl) {
     this.uiId = 'material-' + (instanceCounter++);
     // Setting the value accessor directly (instead of using
     // the providers) to avoid running into a circular import.
