@@ -53,7 +53,6 @@ export class FateControllerService {
     'heading1' : {
       command: 'formatBlock',
       value: 'H1',
-      option: 1,
       name: '1st Header',
       label: 'h1',
       detect: FateType.HEADER1
@@ -61,7 +60,6 @@ export class FateControllerService {
     'heading2' : {
       command: 'formatBlock',
       value: 'H2',
-      option: 2,
       name: '2nd Header',
       label: 'h2',
       detect: FateType.HEADER2
@@ -69,7 +67,6 @@ export class FateControllerService {
     'heading3' : {
       command: 'formatBlock',
       value: 'H3',
-      option: 3,
       name: '3rd Header',
       label: 'h3',
       detect: FateType.HEADER3
@@ -77,7 +74,6 @@ export class FateControllerService {
     'heading4' : {
       command: 'formatBlock',
       value: 'H4',
-      option: 4,
       name: '4th Header',
       label: 'h4',
       detect: FateType.HEADER4
@@ -85,7 +81,6 @@ export class FateControllerService {
     'heading5' : {
       command: 'formatBlock',
       value: 'H5',
-      option: 5,
       name: '5th Header',
       label: 'h5',
       detect: FateType.HEADER5
@@ -93,7 +88,6 @@ export class FateControllerService {
     'heading6' : {
       command: 'formatBlock',
       value: 'H6',
-      option: 6,
       name: '6th Header',
       label: 'h6',
       detect: FateType.HEADER6
@@ -222,6 +216,11 @@ export class FateControllerService {
       for (const action in this.actionMapping) {
         if (this.actionMapping[action].detect && this.actionMapping[action].detect === node.type) {
           actions.push({action: action, value: node.value});
+        } else if (this.actionMapping[action].detect && typeof this.actionMapping[action].detect === 'function') {
+          const detected = this.actionMapping[action].detect(node);
+          if (detected) {
+            actions.push({action: action, value: detected.value});
+          }
         }
       }
     }
@@ -237,7 +236,11 @@ export class FateControllerService {
         throw new Error('Action "' + action + '"doesn\'t have a undo command');
       }
     } else {
-      this.commandsPipe[channel].next({name: this.actionMapping[action].command, value: this.actionMapping[action].value || value});
+      if (this.actionMapping[action].value && (typeof this.actionMapping[action].value === 'function')) {
+        this.commandsPipe[channel].next({name: this.actionMapping[action].command, value: this.actionMapping[action].value(value)});
+      } else {
+        this.commandsPipe[channel].next({name: this.actionMapping[action].command, value: this.actionMapping[action].value || value});
+      }
     }
   }
 
@@ -249,7 +252,11 @@ export class FateControllerService {
         throw new Error('Action "' + action + '"doesn\'t have a undo command');
       }
     } else {
-      this.commandsPipe[channel].next({name: action.command, value: action.value || value});
+      if (action.value && (typeof action.value === 'function')) {
+        this.commandsPipe[channel].next({name: action.command, value: action.value(value)});
+      } else {
+        this.commandsPipe[channel].next({name: action.command, value: action.value || value});
+      }
     }
   }
 
