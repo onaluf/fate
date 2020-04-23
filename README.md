@@ -165,6 +165,15 @@ export class AppComponent  {
 ```
 If you want to have a custom icon to represent you button you can have a look at the previous section.
 
+The available fields to customize an action are:
+
+  - `command`: this must be one of the commands listed in https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
+  - `value`: this can be a static value that you want to associate to the above comand *or* in the case of a dropdown it can be function that will take the value of the dropdown and return a transfored value
+  - `name`: This is the text show to the screen reader on the button
+  - `label`: this is the text what will be shown on the button if no icons exist for the name you provided
+  - `detect`: this is either a `FateType` or a function that takes a `FateNode` as an input and returns either `false` or an object with a `value` field that will be value passed to the dropdown (if any)
+  - `dropdown`: this is an Angular Component implementing the  `FateDropdown` interface. It will be use to show a dialog that allows the user to customize the value of the command
+
 ### Add the icon to your toolbar
 In the template where your ui is included you can simply add the new custom button by it's `name`:
 
@@ -174,4 +183,5 @@ In the template where your ui is included you can simply add the new custom butt
 
 In this example we only show the new icon but you can include and existing icon too.
 
-
+## Custom Inline dropdown
+If you want to detect some string of text and show a dropdown to the user, for autocompletion for example, you can register an inline action. There is an example of this on the main site when you type `@`. You can have a look at the code in [`src/app/app.component.ts`](https://github.com/onaluf/fate/blob/master/src/app/app.component.ts).
