@@ -19,15 +19,27 @@ export class FateHtmlParserService {
   public parseElement(element: HTMLElement): FateNode {
     const nodes = this.parseType(element);
     let currentNode = nodes[0];
+    
+    let isABlock = (currentNode.type === FateType.PARAGRAPH);
     for (let i = 1; i < nodes.length; i++) {
       currentNode.children.push(nodes[i]);
       currentNode = nodes[i];
+      if (currentNode.type === FateType.PARAGRAPH) {
+        isABlock = true;
+      }
     }
 
+    let previousNodeWasText = false;
     for (let i = 0; i < element.childNodes.length; i ++) {
       const child = element.childNodes[i];
       // pick ahead to look for <br>
-      if (i < element.childNodes.length - 1 && this.isLinebreak(element.childNodes[i + 1])) {
+      if (
+          (i < element.childNodes.length - 1) &&
+          (this.isLinebreak(element.childNodes[i + 1])) &&
+          !(isABlock && i === element.childNodes.length - 2) // The last child is a BR in a block, this can be ignored
+        ) {
+
+        previousNodeWasText = false;
         if (child instanceof Text) {
           // wrap the text in a paragraph
           const paragraph = new FateNode(FateType.PARAGRAPH);
@@ -42,9 +54,16 @@ export class FateHtmlParserService {
         }
       } else {
         if (child instanceof Text) {
-          currentNode.children.push(child.data);
+          // If two "pure" text node follow one another we can safely merge then as one (for i > 0)
+          if (previousNodeWasText) {
+            currentNode.children[currentNode.children.length - 1] = currentNode.children[currentNode.children.length - 1] + child.data;
+          } else {
+            currentNode.children.push(child.data);
+          }
+          previousNodeWasText = true;
         } else if (child instanceof HTMLElement) {
           currentNode.children.push(this.parseElement(child));
+          previousNodeWasText = false;
         } else {
           // ignore
         }
@@ -65,43 +84,57 @@ export class FateHtmlParserService {
 
   protected getAdditonalStyle(element: HTMLElement): Array<FateNode> {
     const style = element.style;
-    switch (style.textAlign) {
+    const detectedStyleNode = [];
+    // Look for alignement
+    const align = element.getAttribute('align') || style.textAlign;
+    switch (align) {
       case 'left':
-        return [new FateNode(FateType.ALIGN_LEFT)];
+        detectedStyleNode.push(new FateNode(FateType.ALIGN_LEFT));
+        break;
       case 'center':
-        return [new FateNode(FateType.ALIGN_CENTER)];
+        detectedStyleNode.push(new FateNode(FateType.ALIGN_CENTER));
+        break;
       case 'right':
-        return [new FateNode(FateType.ALIGN_RIGHT)];
+        detectedStyleNode.push(new FateNode(FateType.ALIGN_RIGHT));
+        break;
       case 'justify':
-        return [new FateNode(FateType.JUSTIFY)];
+        detectedStyleNode.push(new FateNode(FateType.JUSTIFY));
+        break;
     }
-    switch (element.getAttribute('align')) {
-      case 'left':
-        return [new FateNode(FateType.ALIGN_LEFT)];
-      case 'center':
-        return [new FateNode(FateType.ALIGN_CENTER)];
-      case 'right':
-        return [new FateNode(FateType.ALIGN_RIGHT)];
-      case 'justify':
-        return [new FateNode(FateType.JUSTIFY)];
+    // Look for color
+    const color = element.getAttribute('color') || style.color;
+    if(color) {
+      detectedStyleNode.push(new FateNode(FateType.COLOR, color));
     }
-    return [];
+    // Look for size
+    const size = element.getAttribute('size') || style.fontSize;
+    if (size) {
+      detectedStyleNode.push(new FateNode(FateType.SIZE, size));
+    }
+    // Look for family
+    const typeface = element.getAttribute('face') || style.fontFamily;
+    if (typeface) {
+      detectedStyleNode.push(new FateNode(FateType.TYPEFACE, typeface));
+    }
+
+    return detectedStyleNode;
   }
 
   protected parseType(element: HTMLElement): Array<FateNode> {
+    const additionaStyle = this.getAdditonalStyle(element);
     switch (element.nodeName) {
       case 'H1':
-        return [new FateNode(FateType.HEADER1), ...this.getAdditonalStyle(element)];
+        return [new FateNode(FateType.HEADER1), ...additionaStyle];
       case 'H2':
-        return [new FateNode(FateType.HEADER2), ...this.getAdditonalStyle(element)];
+        return [new FateNode(FateType.HEADER2), ...additionaStyle];
       case 'H3':
-        return [new FateNode(FateType.HEADER3), ...this.getAdditonalStyle(element)];
+        return [new FateNode(FateType.HEADER3), ...additionaStyle];
       case 'H4':
-        return [new FateNode(FateType.HEADER4), ...this.getAdditonalStyle(element)];
+        return [new FateNode(FateType.HEADER4), ...additionaStyle];
       case 'H5':
-        return [new FateNode(FateType.HEADER5), ...this.getAdditonalStyle(element)];
+        return [new FateNode(FateType.HEADER5), ...additionaStyle];
       case 'H6':
-        return [new FateNode(FateType.HEADER6), ...this.getAdditonalStyle(element)];
+        return [new FateNode(FateType.HEADER6), ...additionaStyle];
       case 'B':
       case 'STRONG':
         return [new FateNode(FateType.BOLD)];
@@ -126,9 +159,8 @@ export class FateHtmlParserService {
         return [new FateNode(FateType.LISTITEM)];
       case 'DIV':
       case 'P':
-        const styles = this.getAdditonalStyle(element);
-        if (styles.length > 0) {
-          return [new FateNode(FateType.NONE), ...styles];
+        if (additionaStyle.length > 0) {
+          return [...additionaStyle];
         }
         return [new FateNode(FateType.PARAGRAPH)];
       case 'BLOCKQUOTE':
@@ -138,6 +170,9 @@ export class FateHtmlParserService {
         }
         return [new FateNode(FateType.NONE)];
       default:
+        if (additionaStyle.length > 0) {
+          return [...additionaStyle];
+        }
         return [new FateNode(FateType.NONE)];
     }
   }
@@ -170,8 +205,6 @@ export class FateHtmlParserService {
         return '<quote>' + this.serialize(node) + '</quote>';
       case FateType.CODE:
         return '<code>' + this.serialize(node) + '</code>';
-      case FateType.SIZE:
-        return '<span style="font-size: ' + node.value + '">' + this.serialize(node) + '</span>';
       case FateType.BOLD:
         return '<strong>' + this.serialize(node) + '</strong>';
       case FateType.ITALIC:
@@ -202,6 +235,12 @@ export class FateHtmlParserService {
         return '<div style="text-align: justify;">' + this.serialize(node, true) + '</div>';
       case FateType.INDENT:
         return '<blockquote style="margin-left: 40px">' + this.serialize(node, true) + '</blockquote>';
+      case FateType.COLOR:
+        return '<font color="' + node.value + '">' + this.serialize(node) + '</font>';
+      case FateType.SIZE:
+        return '<font size="' + node.value + '">' + this.serialize(node) + '</font>';
+      case FateType.TYPEFACE:
+        return '<font face="' + node.value + '">' + this.serialize(node) + '</font>';
       case FateType.NONE:
         return this.serialize(node);
     }

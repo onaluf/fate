@@ -27,4 +27,5 @@ export enum FateType {
   UNORDERED_LIST = 'UNORDERED_LIST',
   LISTITEM = 'LISTITEM',
   INDENT = 'INDENT',
+  TYPEFACE = 'TYPEFACE',
 }
