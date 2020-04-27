@@ -36,12 +36,15 @@ $font-size: 14px;
   transition: background 300ms;
   border-radius: 3px;
 
+  color: #333;
+
   &:active,
   &.enabled,
   &.with-dropdown {
     background-color: #E5E5E5;
   }
-  &:hover {
+  &:hover,
+  &:focus {
     background-color: #CCC;
   }
 
