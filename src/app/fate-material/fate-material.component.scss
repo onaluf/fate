@@ -40,7 +40,8 @@
       &.with-dropdown {
         background-color: #EEE;
       }
-      &:hover {
+      &:hover,
+      &:focus {
         background-color: #DFDFDF;
       }
     }

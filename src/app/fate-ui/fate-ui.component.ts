@@ -68,6 +68,16 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  @HostListener('keyup', ['$event'])
+  public keyUp(event) {
+    if (event.key === 'Enter') {
+      const name = event.target.name;
+      if (name) {
+        this.do(event, name);
+      }
+    }
+  }
+
   @ViewChild('dropdown', {
     read: ViewContainerRef,
     static: true,
@@ -84,6 +94,9 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
         let button = event.target;
         if (!button.classList.contains('fate-ui-button')) {
           button = button.closest('.fate-ui-button');
+        }
+        if(!button) {
+          return
         }
         const dropdown =  this.el.nativeElement.querySelector('.fate-ui-dropdown');
 
@@ -165,7 +178,7 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
   }
 
   public ngAfterViewInit() {
-    const handle = document.body.addEventListener('click', (event) => {
+    const handle = window.addEventListener('mousedown', (event) => {
       if (!(event.target as Element).closest('.fate-ui-dropdown')) {
         this.dropdownAction = false;
       }

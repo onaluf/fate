@@ -22,12 +22,15 @@
 
     ::ng-deep {
       .fate-ui-button {
+        color: #eee;
+
         &:active,
         &.enabled,
         &.with-dropdown {
           background-color: #555;
         }
-        &:hover {
+        &:hover,
+        &:focus {
           background-color: #666;
         }
       }
