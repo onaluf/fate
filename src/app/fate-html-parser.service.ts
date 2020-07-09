@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-
 import { FateNode } from './fate-node';
 import { FateType } from './fate-type.enum';
 
@@ -7,8 +6,6 @@ import { FateType } from './fate-type.enum';
   providedIn: 'root'
 })
 export class FateHtmlParserService {
-
-  constructor() { }
 
   public parse(html: string): FateNode {
     const div = document.createElement('div');
@@ -19,7 +16,7 @@ export class FateHtmlParserService {
   public parseElement(element: HTMLElement): FateNode {
     const nodes = this.parseType(element);
     let currentNode = nodes[0];
-    
+
     let isABlock = (currentNode.type === FateType.PARAGRAPH);
     for (let i = 1; i < nodes.length; i++) {
       currentNode.children.push(nodes[i]);
@@ -250,12 +247,19 @@ export class FateHtmlParserService {
     return (child instanceof HTMLElement && child.nodeName === 'BR');
   }
 
+  private p = document.createElement('p');
+  protected encodeHtml(text: string) {
+    // From https://stackoverflow.com/a/29482788/829139
+    this.p.textContent = text;
+    return this.p.innerHTML;
+  }
+
   // Saves a Tree in string representation
   public serialize (node: FateNode, fallbackToBr: boolean = false): string {
     let serialized = '';
     node.children.forEach((child) => {
       if (typeof child === 'string') {
-        serialized += child;
+        serialized += this.encodeHtml(child);
       } else {
         serialized += this.serializeType(child);
       }
