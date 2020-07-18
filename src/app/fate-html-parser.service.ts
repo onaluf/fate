@@ -71,10 +71,12 @@ export class FateHtmlParserService {
 
   public findParentNodes(node: Node, until: Node): Array<FateNode> {
     const nodes: Array<FateNode> = [];
-    let current: HTMLElement = (node.nodeType === 1) ? (node as HTMLElement) : node.parentElement;
+    let current: HTMLElement | Node = (node.nodeType === 1) ? (node as HTMLElement) : (node.parentElement || node.parentNode);
     while (current !== until) {
-      nodes.push(...this.parseType(current));
-      current = current.parentElement;
+      if (current instanceof HTMLElement) {
+        nodes.push(...this.parseType(current));
+      }
+      current = current.parentElement || node.parentNode;
     }
     return nodes;
   }

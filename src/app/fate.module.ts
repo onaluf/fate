@@ -21,6 +21,7 @@ export { FateFontawsomeLegacyIconService } from './fate-fontawsome-legacy-icon.s
 export { FateParserService } from './fate-parser.service';
 export { FateControllerService, FateCommand } from './fate-controller.service';
 export { FateHtmlParserService } from './fate-html-parser.service';
+export { FateLegacyBrowserService } from './fate-legacy-browser.service';
 export { FateNode } from './fate-node';
 export { FateType } from './fate-type.enum';
 
