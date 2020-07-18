@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { FateControllerService } from '../fate-controller.service';
 import { FateHtmlParserService } from '../fate-html-parser.service';
 import { FateParserService } from '../fate-parser.service';
+import { FateLegacyBrowserService } from '../fate-legacy-browser.service';
 
 @Component({
   selector: 'fate-input',
@@ -92,7 +93,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   protected editTarget: any;
   protected isFocused: boolean = false;
 
-  constructor(protected el: ElementRef, protected controller: FateControllerService, protected htmlParser: FateHtmlParserService, protected parser: FateParserService, protected sanitizer: DomSanitizer, protected factoryResolver: ComponentFactoryResolver) {}
+  constructor(protected el: ElementRef, protected controller: FateControllerService, protected htmlParser: FateHtmlParserService, protected parser: FateParserService, protected sanitizer: DomSanitizer, protected factoryResolver: ComponentFactoryResolver, protected legacyBrowser: FateLegacyBrowserService) {}
 
   private reactToChanges() {
     const tree = this.htmlParser.parseElement(this.editTarget);
@@ -179,10 +180,10 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
           this.selectionRange.selectNode(node);
           this.selectionRange.deleteContents();
           stopDefaultAndForceUpdate();
-        } else if (node.nodeName === '#text' && !node.parentElement.isContentEditable) {
+        } else if (node.nodeName === '#text' && !this.legacyBrowser.findParentElement(node).isContentEditable) {
           // this is the case on webkit
           console.debug('deleting inside un-editable block detected');
-          this.selectionRange.selectNode(node.parentElement);
+          this.selectionRange.selectNode(this.legacyBrowser.findParentElement(node));
           this.selectionRange.deleteContents();
           stopDefaultAndForceUpdate();
         }
@@ -225,13 +226,23 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
           this.dropdownInstance.confirmSelection();
         }
       }
+
+      // IE11 doesn't support 'input' event
+      if ((window.document as any).documentMode) {
+        setTimeout(() => {
+          console.debug('input event fallback');
+          this.checkEmpty();
+          this.reactToChanges();
+        }, 0);
+      }
     });
 
     this.editTarget.addEventListener('input', (event: any) => {
-      console.debug('value changed');
+      console.debug('input event');
       this.checkEmpty();
       this.reactToChanges();
     });
+
     const style: any = window.getComputedStyle(this.editTarget);
     this.editTarget.style.minHeight = this.getHeight(2);
   }
@@ -336,12 +347,12 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   protected selectionInEditableTarget() {
     const sel = window.getSelection();
     const node = sel.getRangeAt && sel.rangeCount && sel.getRangeAt(0) && sel.getRangeAt(0).commonAncestorContainer;
-    return node && (node === this.editTarget || (node.parentElement.closest('.fate-edit-target') && (node.parentElement.closest('.fate-edit-target') === this.editTarget)));
+    return node && (node === this.editTarget || this.legacyBrowser.findParent(node, '.fate-edit-target') === this.editTarget);
   }
 
   protected detectStyle() {
     let node = this.selectionRange.commonAncestorContainer;
-    if (!node || (!(node.parentElement.closest('.fate-edit-target') && node !== this.editTarget))) {
+    if (!node || (!(this.legacyBrowser.findParent(node, '.fate-edit-target') && node !== this.editTarget))) {
       // The current selection is not contained in the editable zone.
       // this is most likely due to the input being empty.
       return;

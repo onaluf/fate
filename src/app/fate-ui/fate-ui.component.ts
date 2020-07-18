@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { FateControllerService } from '../fate-controller.service';
 import { FateParserService } from '../fate-parser.service';
 import { FateIconService } from '../fate-icon.service';
+import { FateLegacyBrowserService } from '../fate-legacy-browser.service';
 
 export const defaultButtons = [
   'bold',
@@ -59,11 +60,12 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
 
   protected inputSubscription: Subscription;
 
-  constructor(protected el: ElementRef, public controller: FateControllerService, public icon: FateIconService, protected parser: FateParserService, protected factoryResolver: ComponentFactoryResolver) { }
+  constructor(protected el: ElementRef, public controller: FateControllerService, public icon: FateIconService, protected parser: FateParserService, protected factoryResolver: ComponentFactoryResolver, protected legacyBrowser: FateLegacyBrowserService) { }
 
   @HostListener('mousedown', ['$event'])
   public mouseDown(event) {
-    if (!event.target.closest('.fate-ui-dropdown')) {
+
+    if (!this.legacyBrowser.findParent(event.target, '.fate-ui-dropdown')) {
       event.preventDefault();
     }
   }
@@ -93,7 +95,7 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
       } else {
         let button = event.target;
         if (!button.classList.contains('fate-ui-button')) {
-          button = button.closest('.fate-ui-button');
+          button = this.legacyBrowser.findParent(button, '.fate-ui-button');
         }
         if(!button) {
           return
@@ -179,7 +181,7 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
 
   public ngAfterViewInit() {
     const handle = window.addEventListener('mousedown', (event) => {
-      if (!(event.target as Element).closest('.fate-ui-dropdown')) {
+      if (!this.legacyBrowser.findParent((event.target as Element), '.fate-ui-dropdown')) {
         this.dropdownAction = false;
       }
     });
