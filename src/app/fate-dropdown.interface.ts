@@ -4,6 +4,6 @@ export interface FateDropdown {
   value: any;
   valueChange: EventEmitter<any>;
   selectNext: () => void;
-  selecPrevious: () => void;
+  selectPrevious: () => void;
   confirmSelection: () => void;
 }
