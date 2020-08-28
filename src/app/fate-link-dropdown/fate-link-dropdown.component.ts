@@ -21,6 +21,6 @@ export class FateLinkDropdownComponent implements FateDropdown {
   }
 
   public selectNext () {};
-  public selecPrevious () {};
+  public selectPrevious () {};
   public confirmSelection () {};
 }

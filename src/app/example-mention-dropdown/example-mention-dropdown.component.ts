@@ -76,7 +76,7 @@ export class ExampleMentionDropdownComponent implements FateDropdown {
       this.selected = this.filteredList.length - 1;
     }
   };
-  public selecPrevious () {
+  public selectPrevious () {
     this.selected--;
     if (this.selected < 0) {
       this.selected = 0;
