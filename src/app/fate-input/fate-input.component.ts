@@ -217,7 +217,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       if (this.inlineAction) {
         if (event.key === 'Up' || event.key === 'ArrowUp') {
           stopDefault();
-          this.dropdownInstance.selecPrevious();
+          this.dropdownInstance.selectPrevious();
         } else if (event.key === 'Down' || event.key === 'ArrowDown') {
           stopDefault();
           this.dropdownInstance.selectNext();
