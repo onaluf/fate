@@ -69,7 +69,7 @@
     "node-sass": "^4.13.1",
     "protractor": "~5.1.2",
     "rxjs": "^6.5.5",
-    "semantic-release": "^12.4.1",
+    "semantic-release": "^17.2.3",
     "travis-deploy-once": "^4.3.4",
     "ts-node": "~3.0.4",
     "tslint": "~5.10.0",
