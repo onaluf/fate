@@ -171,7 +171,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
       //
       // Note: It may make sense to delete the selection for normal text
       // input too but for now we only do it on deletion.
-      if (event.key === 'Backspace' || event.key === 'Delete' && this.selectionRange) {
+      if ((event.key === 'Backspace' || event.key === 'Delete') && this.selectionRange) {
         const node = this.selectionRange.commonAncestorContainer;
         console.debug('Deletion', node);
         if (node instanceof HTMLElement && !(node as HTMLElement).isContentEditable) {
