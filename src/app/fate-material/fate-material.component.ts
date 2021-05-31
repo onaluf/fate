@@ -19,7 +19,7 @@ let instanceCounter = 0;
   styleUrls: ['./fate-material.component.scss'],
   providers: [
     { provide: MatFormFieldControl, useExisting: FateMaterialComponent },
-    { provide: FateIconService, useClass: FateMaterialIconService }
+    { provide: FateIconService, useExisting: FateMaterialIconService }
   ],
 })
 export class FateMaterialComponent implements  ControlValueAccessor, OnDestroy, MatFormFieldControl<string>  {
