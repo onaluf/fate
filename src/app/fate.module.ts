@@ -35,7 +35,6 @@ export { FateType } from './fate-type.enum';
   imports: [
     CommonModule,
     FormsModule,
-    MatFormFieldModule,
   ],
   exports: [
     FateUiComponent,
