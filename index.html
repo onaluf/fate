@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>fate: Flexible Angular Text Editor</title>
+  <base href="/fate/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Abril+Fatface" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <h1>fate</h1>
+      <p>Flexible Angular Text Editor</p>
+    </div>
+      <app-root></app-root>
+    <div class="container">
+      <div class="about">
+        <h2>What is fate?</h2>
+        <p>Fate is a rich text editor (wysiwyg) natively written for angular (>= v2) in typescript with footprint and
+        flexibility in mind. Its goal is to be very easy to customise and be as small as
+        it can thanks to tree shaking.</p>
+        <p>Bootstrap and Google Material styled version are included to fit in forms using those styles. To use the material one you will need to include <a href="https://material.angular.io">Angular Material</a> in your project. To use the Boostrap version you will need to include the <a href="https://getbootstrap.com/">Boostrap CSS</a>.</p>
+      </div>
+      <div class="getting-started">
+        <h2>Installing fate</h2>
+        <ol>
+          <li>Use npm to download the module: <code>npm install --save fate-editor</code></li>
+          <li>Then import the FateModule in your app: <code>import { FateModule } from 'fate-editor'</code></li>
+          <li>If you use Material import the FateMaterialModule too: <code>import { FateMaterialModule } from 'fate-editor'</code></li>
+          <li>Then add the module(s) to you <code>imports</code> list</li>
+          <li>Material version uses <a href="https://material.io/icons/">Google's material icons</a>, the two other versions use <a href="https://fontawesome.com">Font Awsome</a> icons, so you will need to include the right one for you</li>
+          <li>If you use <code>[(ngModel)]</code> don't forget to include <code>FormsModule</code> from <code>"@angular/forms"</code></li>
+        </ol>
+
+        <h2>Using fate</h2>
+        <p>For a detailed description of fate's component have a look at the <a href="https://github.com/onaluf/fate/blob/master/README.md">ReadMe</a>.
+      </div>
+      <div class="support">
+        <h2>Support, Feature Request and Bug Report</h2>
+        <p>If you need help with fate don't hesitate to look if someone else got the same issue on <a href="https://stackoverflow.com/questions/tagged/fate-editor">Stack Overflow</a> or <a href="https://stackoverflow.com/questions/ask?tags=fate-editor">ask a question</a> using the tag <code>fate-editor</code>.</p>
+        <p>If you have a bug to report or would like to fill a feature request just use <a href="https://github.com/onaluf/fate/issues">GitHub's issue tracker</a>.
+      </div>
+      <div class="contributing">
+        <h2>Contributing</h2>
+        <p>Just fork the project create a pull-request on it's <a href="https://github.com/onaluf/fate">GitHub</a> to contribute.</p>
+      </div>
+    </div>
+    <div class="footer">
+      <span class="fate-font">fate</span> is an open source project with an <a href="https://github.com/onaluf/fate/blob/master/LICENSE">MIT license</a> developed by <a href="http://selim.arsever.ch">Selim Arsever</a> hosted on <a href="https://github.com/onaluf/fate">GitHub</a>
+    </div>
+  </div>
+<script src="runtime.js" defer></script><script src="polyfills-es5.js" nomodule defer></script><script src="polyfills.js" defer></script><script src="styles.js" defer></script><script src="vendor.js" defer></script><script src="main.js" defer></script></body>
+</html>
