@@ -97,7 +97,7 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
         if (!button.classList.contains('fate-ui-button')) {
           button = this.legacyBrowser.findParent(button, '.fate-ui-button');
         }
-        if(!button) {
+        if (!button) {
           return
         }
         const dropdown =  this.el.nativeElement.querySelector('.fate-ui-dropdown');
@@ -106,7 +106,7 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
 
         this.dropdownValue = this.enabled[action];
         console.debug('action has value', button, dropdown, this.dropdownValue);
-        this.initDropdown(this.controller.getAction(action).dropdown, this.dropdownValue);
+        this.initDropdown(this.controller.getAction(action).dropdown, this.dropdownValue, this.controller.getAction(action).closeOnEmit);
 
         // Postion the dropdown
         setTimeout(() => {
@@ -147,7 +147,7 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
     };
   }
 
-  protected initDropdown(actionComponent, value) {
+  protected initDropdown(actionComponent, value, closeOnEmit) {
     if (this.dropdownComponent) {
       this.dropdownComponent.destroy();
     }
@@ -158,6 +158,7 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
       component.instance.valueChange.subscribe((newValue) => {
         this.dropdownValue = newValue;
         this.controller.do(this.uiId, this.dropdownAction, newValue);
+        this.dropdownAction = closeOnEmit ? false : this.dropdownAction;
       });
       this.dropdownComponent = this.viewContainerRef.insert(component.hostView);
     } else {
