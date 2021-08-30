@@ -173,6 +173,7 @@ The available fields to customize an action are:
   - `label`: this is the text what will be shown on the button if no icons exist for the name you provided
   - `detect`: this is either a `FateType` or a function that takes a `FateNode` as an input and returns either `false` or an object with a `value` field that will be value passed to the dropdown (if any)
   - `dropdown`: this is an Angular Component implementing the  `FateDropdown` interface. It will be use to show a dialog that allows the user to customize the value of the command
+  - `closeOnEmit`: this is for determination if close dropdown, when emits a value
 
 ### Add the icon to your toolbar
 In the template where your ui is included you can simply add the new custom button by it's `name`:
