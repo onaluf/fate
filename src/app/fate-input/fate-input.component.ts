@@ -20,8 +20,9 @@ import { FateLegacyBrowserService } from '../fate-legacy-browser.service';
       <ng-template #dropdown></ng-template>
     </div>
     <div [class]="'fate-edit-target ' + customClass"
+         [class.disabled]="isDisabled"
          [ngClass]="{empty: empty}"
-         contenteditable="true"
+         [attr.contenteditable]="!isDisabled"
          [title]="placeholder"
          [innerHtml]="content"></div>
   `,
@@ -36,6 +37,9 @@ import { FateLegacyBrowserService } from '../fate-legacy-browser.service';
       background: #FFF;
       color: #000;
       overflow: visible;
+    }
+    :host div.fate-edit-target.disabled {
+      user-select: none;
     }
     :host div.fate-edit-target.empty:not(:focus):before {
       content:attr(title);
@@ -92,6 +96,7 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   public empty: boolean = true;
   protected editTarget: any;
   protected isFocused: boolean = false;
+  public isDisabled: boolean = false;
 
   constructor(protected el: ElementRef, protected controller: FateControllerService, protected htmlParser: FateHtmlParserService, protected parser: FateParserService, protected sanitizer: DomSanitizer, protected factoryResolver: ComponentFactoryResolver, protected legacyBrowser: FateLegacyBrowserService) {}
 
@@ -396,6 +401,10 @@ export class FateInputComponent implements ControlValueAccessor, OnChanges, OnIn
   }
 
   public registerOnTouched(fn: () => void) {}
+
+  public setDisabledState(isDisabled: boolean): void {
+    this.isDisabled = isDisabled;
+  }
 
   protected checkForDropdownContext() {
     const startPos = Math.max(this.selectionRange.startOffset - 20, 0);
