@@ -53,8 +53,7 @@ $font-size: 14px;
   }
 }
 .fate-ui-dropdown {
-  opacity: 0;
-  pointer-events: none;
+  display: none;
   z-index: 1;
   font-size: 14px;
   user-select: all;
@@ -69,7 +68,6 @@ $font-size: 14px;
   box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.3);
 
   &.visible {
-    opacity: 1;
-    pointer-events: all;
+    display: block;
   }
 }

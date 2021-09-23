@@ -54,7 +54,7 @@ export class ExampleMentionDropdownComponent implements FateDropdown {
   public filteredList: Array<any>;
   private filterList() {
     this.filteredList = [];
-    const criteria = this._value.substr(1);
+    const criteria = this._value?.substr(1) || '';
     for (const repos of this.reposList) {
       if (repos.name.toLowerCase().indexOf(criteria.toLowerCase()) > -1) {
         this.filteredList.push(repos);

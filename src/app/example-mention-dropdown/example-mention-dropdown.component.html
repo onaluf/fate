@@ -1,3 +1,3 @@
 <ul>
-  <li *ngFor="let repos of filteredList; let i = index" [class.active]="i === selected" class="repos" (click)="changeValue(repos)">{{repos.name}}</li>
+  <li tabindex="0" *ngFor="let repos of filteredList; let i = index" [class.active]="i === selected" class="repos" (click)="changeValue(repos)" (keyup.enter)="changeValue(repos)">{{repos.name}}</li>
 </ul>
