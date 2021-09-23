@@ -77,6 +77,8 @@ export class FateUiComponent implements OnChanges, AfterViewInit {
       if (name) {
         this.do(event, name);
       }
+    } else if (event.key === 'Escape') {
+      this.dropdownAction = false;
     }
   }
 
