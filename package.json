@@ -37,7 +37,7 @@
     "rxjs": "^6.5.3"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.901.0",
+    "@angular-devkit/build-angular": "~21.0.1",
     "@angular-devkit/schematics": "^9.1.0",
     "@angular/animations": "^9.1.0",
     "@angular/cdk": "^9.2.0",
@@ -75,7 +75,7 @@
     "tslint": "~5.10.0",
     "typescript": "~3.8.3",
     "webpack": "^4.42.1",
-    "webpack-dev-server": "^3.10.3",
+    "webpack-dev-server": "^5.2.2",
     "zone.js": "~0.10.2"
   },
   "repository": {
