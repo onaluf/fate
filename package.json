@@ -30,7 +30,7 @@
   },
   "private": false,
   "peerDependencies": {
-    "@angular/common": "^9.1.0",
+    "@angular/common": "^19.2.16",
     "@angular/core": "^9.1.0",
     "@angular/forms": "^9.1.0",
     "core-js": "^2.4.1",
@@ -42,7 +42,7 @@
     "@angular/animations": "^9.1.0",
     "@angular/cdk": "^9.2.0",
     "@angular/cli": "^9.1.0",
-    "@angular/common": "^9.1.0",
+    "@angular/common": "^19.2.16",
     "@angular/compiler": "^9.1.0",
     "@angular/compiler-cli": "^9.1.0",
     "@angular/core": "^9.1.0",
